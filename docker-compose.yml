@@ -1,0 +1,89 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: "traefik"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.mytlschallenge.acme.email=simnik123@gmail.com"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=./config/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json"
+      - "./config/letsencrypt:/config/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  webserver:
+    image: "nginx:alpine"
+    container_name: "webserver"
+    volumes:
+      - ./webserver:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`simonottosen.dk`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+
+  devops:
+    image: "nginx:alpine"
+    container_name: "devops"
+    volumes:
+      - ./devops:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.devops.rule=Host(`devops.simonottosen.dk`)"
+      - "traefik.http.routers.devops.entrypoints=websecure"
+      - "traefik.http.routers.devops.tls.certresolver=mytlschallenge"
+
+
+  rtorrent:
+    image: wonderfall/rtorrent-flood
+    container_name: rtorrent
+    restart: unless-stopped
+    tty: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 49184:49184
+      - 49184:49184/udp
+    environment:
+      - UID=1000
+      - GID=1000
+      - FLOOD_SECRET=supersecretflood
+    volumes:
+      - ./config/flood:/flood-db
+      - ./downloads:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
+      - "traefik.http.routers.torrent.entrypoints=websecure"
+      - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.torrent.loadbalancer.server.port=3000"
+
+  minecraft:
+    image: itzg/minecraft-server
+    ports:
+      - "25565:25565"
+    volumes:
+      - "mc:/data"
+    environment:
+      EULA: "TRUE"
+    restart: always
+    labels:
+      - "traefik.enable=false"
+
+volumes:
+  mc: {}
