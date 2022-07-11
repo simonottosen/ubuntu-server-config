@@ -35,7 +35,7 @@ services:
       - "traefik.http.routers.hjem.rule=Host(`houseprice.simonottosen.dk`)"
       - "traefik.http.routers.hjem.entrypoints=websecure"
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.hjem.loadbalancer.server.port=3000"
+      - "traefik.http.services.hjem.loadbalancer.server.port=8080"
 
 
   webserver:
