@@ -32,9 +32,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`houseprice.simonottosen.dk`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.hjem.rule=Host(`houseprice.simonottosen.dk`)"
+      - "traefik.http.routers.hjem.entrypoints=websecure"
+      - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.hjem.loadbalancer.server.port=3000"
 
 
   webserver:
