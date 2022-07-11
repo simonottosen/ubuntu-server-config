@@ -26,6 +26,17 @@ services:
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+  hjem:
+    image: tpanum/hjem
+    container_name: "houseprice"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`houseprice.simonottosen.dk`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+
+
   webserver:
     image: "nginx:alpine"
     container_name: "webserver"
