@@ -78,6 +78,7 @@ services:
       - ./hooks/:/etc/webhook
       - ./scripts/:/scripts/
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./pipe:/hostpipe
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.webhook.rule=Host(`webhook.simonottosen.dk`)"

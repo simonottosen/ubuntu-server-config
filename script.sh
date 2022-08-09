@@ -11,24 +11,24 @@ sudo usermod -aG docker $USER
 newgrp docker
 mkdir mediaserver
 cd mediaserver
-curl https://transfer.sh/ATz0zb/docker-compose.yml >> docker-compose.yml
-mkdir config
-mkdir config/letsencrypt
-cd config/letsencrypt
-curl https://transfer.sh/AgRtO7/acme.json >> acme.json
-cd ..
-cd ..
-docker-compose up
-curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
-echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list
-sudo apt -y update
-sudo apt -y install plexmediaserver
-sudo mkdir -p plexmedia/{movies,series}
-sudo chown -R plex: plexmedia
+git init
+git pull https://github.com/simonottosen/ubuntu-server-config.git
+chmod u+x scripts/deploy.sh
+chmod u+x pipe/execpipe.sh
+mkfifo pipe/deploy
+crontab -l > mycron
+echo "@reboot /home/simonottosen/mediaserver/pipe/execpipe.sh" >> mycron
+crontab mycron
+rm mycron
 sudo zfs get all
 sudo zfs set mountpoint=/media data
 sudo chown -R $USER:$USER /media
 sudo apt-get install webhook
 
+
+
 #/dev/md127pi 
 # sudo apt-get install xfsprogs
+
+
+
