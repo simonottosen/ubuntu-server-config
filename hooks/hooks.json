@@ -3,21 +3,29 @@
     "id": "deploy",
     "execute-command": "/scripts/deploy.sh",
     "response-message": "Executing deploy webhook ...",
-    "pass-arguments-to-command": [
-      {
-        "source": "payload",
-        "name": "repository.full_name"
-      }
-    ],
     "trigger-rule": {
-      "match": {
-        "type": "value",
-        "value": "simonottosen/ubuntu-server-config",
-        "parameter": {
-          "source": "payload",
-          "name": "repository.full_name"
+      "and": [
+        {
+          "match": {
+            "type": "payload-hash-sha1",
+            "secret": "j68UzdFLVylc9HGUYVvTKRYZ",
+            "parameter": {
+              "source": "header",
+              "name": "X-Hub-Signature"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "refs/heads/main",
+            "parameter": {
+              "source": "payload",
+              "name": "ref"
+            }
+          }
         }
-      }
+      ]
     }
   }
 ]
