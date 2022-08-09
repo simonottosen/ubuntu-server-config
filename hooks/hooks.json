@@ -6,16 +6,16 @@
     "pass-arguments-to-command": [
       {
         "source": "payload",
-        "name": "token"
+        "name": "repository.full_name"
       }
     ],
     "trigger-rule": {
       "match": {
         "type": "value",
-        "value": "1996",
+        "value": "simonottosen/ubuntu-server-config",
         "parameter": {
           "source": "payload",
-          "name": "token"
+          "name": "repository.full_name"
         }
       }
     }

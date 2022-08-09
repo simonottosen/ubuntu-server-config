@@ -28,6 +28,7 @@ sudo chown -R plex: plexmedia
 sudo zfs get all
 sudo zfs set mountpoint=/media data
 sudo chown -R $USER:$USER /media
+sudo apt-get install webhook
 
 #/dev/md127pi 
 # sudo apt-get install xfsprogs
