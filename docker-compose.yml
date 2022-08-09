@@ -82,6 +82,7 @@ services:
       - "traefik.http.routers.webhook.rule=Host(`webhook.simonottosen.dk`)"
       - "traefik.http.routers.webhook.entrypoints=websecure"
       - "traefik.http.routers.webhook.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.webhook.loadbalancer.server.port=9000"
 
   flood:
     image: jesec/flood
