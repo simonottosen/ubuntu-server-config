@@ -1,5 +1,4 @@
 version: "3.3"
-
 services:
 
   traefik:
@@ -22,9 +21,10 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      - "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json"
+      #- "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json"
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
 
   hjem:
     image: tpanum/hjem
@@ -48,6 +48,7 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`simonottosen.dk`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+    restart: unless-stopped
 
   devops:
     image: "nginx:alpine"
@@ -59,43 +60,72 @@ services:
       - "traefik.http.routers.devops.rule=Host(`devops.simonottosen.dk`)"
       - "traefik.http.routers.devops.entrypoints=websecure"
       - "traefik.http.routers.devops.tls.certresolver=mytlschallenge"
-
-
-  rtorrent:
-    image: wonderfall/rtorrent-flood
-    container_name: rtorrent
     restart: unless-stopped
-    tty: true
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - 49184:49184
-      - 49184:49184/udp
-    environment:
-      - UID=1000
-      - GID=1000
-      - FLOOD_SECRET=supersecretflood
+
+  webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webhook
+    restart: unless-stopped
+    healthcheck:
+      test: "curl -sS --fail 127.0.0.1:9000 || exit 1"
+      interval: 120s
+      timeout: 5s
+      retries: 5
     volumes:
-      - ./config/flood:/flood-db
+      - ./hooks/:/etc/webhook
+      - ./scripts/:/scripts/
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webhook.rule=Host(`webhook.simonottosen.dk`)"
+      - "traefik.http.routers.webhook.entrypoints=websecure"
+      - "traefik.http.routers.webhook.tls.certresolver=mytlschallenge"
+
+  flood:
+    image: jesec/flood
+    user: 1000:1000
+    restart: unless-stopped
+    command: --port 3001 --allowedpath /data
+    environment:
+      HOME: /config
+    volumes:
+      - ./config/rtorrent:/config
       - ./downloads:/data
+    ports:
+      - 3001:3001
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.torrent.loadbalancer.server.port=3000"
-
-  minecraft:
-    image: itzg/minecraft-server
-    ports:
-      - "25565:25565"
-    volumes:
-      - "mc:/data"
+      - "traefik.http.services.torrent.loadbalancer.server.port=3001"
+      
+  rtorrent:
+    image: jesec/rtorrent
+    user: 1000:1000
+    restart: unless-stopped
+    command: -o network.port_range.set=6881-6881,system.daemon.set=true
     environment:
-      EULA: "TRUE"
-    restart: always
+      HOME: /config
+    volumes:
+      - ./config/rtorrent:/config
+      - ./downloads:/data
+    ports:
+      - 6881:6881
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+    volumes:
+      - ./downloads:/config
+      - ./downloads:/downloads
+    restart: unless-stopped
     labels:
       - "traefik.enable=false"
-
-volumes:
-  mc: {}
