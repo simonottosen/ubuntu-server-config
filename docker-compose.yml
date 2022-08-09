@@ -21,7 +21,7 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      #- "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json"
+      #- "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json" 
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
