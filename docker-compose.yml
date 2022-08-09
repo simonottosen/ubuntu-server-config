@@ -83,6 +83,9 @@ services:
       - "traefik.http.routers.webhook.entrypoints=websecure"
       - "traefik.http.routers.webhook.tls.certresolver=mytlschallenge"
       - "traefik.http.services.webhook.loadbalancer.server.port=9000"
+      - traefik.http.routers.webhook.rule=PathPrefix(`/webhook`)
+      - traefik.http.routers.webhook.middlewares=webhook-stripprefix
+      - traefik.http.middlewares.webhook-stripprefix.stripprefix.prefixes=/webhook
 
   flood:
     image: jesec/flood
