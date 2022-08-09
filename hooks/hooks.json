@@ -12,7 +12,7 @@
     "trigger-rule": {
       "match": {
         "type": "value",
-        "value": "42",
+        "value": "1996",
         "parameter": {
           "source": "payload",
           "name": "token"

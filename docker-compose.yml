@@ -68,6 +68,7 @@ services:
       dockerfile: Dockerfile
     container_name: webhook
     restart: unless-stopped
+    user: 1000:1000
     healthcheck:
       test: "curl -sS --fail 127.0.0.1:9000 || exit 1"
       interval: 120s
