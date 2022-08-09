@@ -1,3 +1,13 @@
-#Server configuration
+# Server configuration
+
+## Deployment
+Deploy the latest to the hook
+```
 simonottosen@servermat:~/mediaserver$ https POST webhook.simonottosen.dk/webhook/hooks/deploy
-Secret defined in GitHub
+```
+
+
+## When starting up a new server from bare metal
+- Run git pull on the repostitory
+- Run script.sh
+- Test that the automatic deployment works
