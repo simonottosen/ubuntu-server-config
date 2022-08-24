@@ -7,6 +7,6 @@ RUN pip install pipenv
 COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
-COPY . /code/
+COPY fetchwaitingtime.py /code/
 EXPOSE 8000
 CMD ["python", "fetchwaitingtime.py"]
