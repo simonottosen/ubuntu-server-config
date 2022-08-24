@@ -4,7 +4,7 @@ FROM python:3.7
 WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
-COPY Pipfile Pipfile.lock /code/
+COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY . /code/
