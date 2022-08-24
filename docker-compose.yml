@@ -65,7 +65,7 @@ services:
     restart: unless-stopped
 
   cph_fetchtime:
-    build: ./cph/Dockerfile
+    build: ./cph/
     volumes:
       - ./cph:/code
     ports:
