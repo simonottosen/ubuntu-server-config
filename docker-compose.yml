@@ -52,7 +52,7 @@ services:
 
   postgres_db:
     image: postgres
-    container_name: "postgres_db"
+    container_name: "cph_postgres_db"
     environment: 
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
@@ -66,6 +66,7 @@ services:
 
   cph_fetchtime:
     build: ./cph/
+    container_name: "cph_fetchtime"
     volumes:
       - ./cph:/code
     ports:
