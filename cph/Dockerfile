@@ -4,8 +4,8 @@ FROM python:3.7
 WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
-COPY Pipfile Pipfile.lock /code/
-RUN pipenv install --system --dev
+COPY Pipfile /code/
+RUN pipenv install --system
 COPY .cph/ /code/
 EXPOSE 8000
 CMD ["python", "fetchwaitingtime.py"]
