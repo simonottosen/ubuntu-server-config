@@ -5,7 +5,7 @@ WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
 COPY Pipfile /code/
-RUN pipenv install --system
+RUN pipenv install --system --dev
 COPY . /code/
 EXPOSE 8000
 CMD ["python", "fetchwaitingtime.py"]
