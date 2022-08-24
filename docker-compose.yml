@@ -29,6 +29,7 @@ services:
   jupyter:
     restart: always
     image: jupyter/datascience-notebook
+    container_name: "jupyter"
     volumes:
       - ./jupyter:/home/jovyan/work
     labels:
@@ -48,6 +49,35 @@ services:
       - "traefik.http.routers.hjem.entrypoints=websecure"
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
+
+  postgres_db:
+    image: postgres
+    container_name: "postgres_db"
+    environment: 
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./cph/db:/var/lib/postgresql/data
+      - ./cph/db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    restart: unless-stopped
+
+  cph_fetchtime:
+    build: ./CPH
+    volumes:
+      - ./CPH:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres_db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      DB_PORT: 5432
+    restart: unless-stopped
 
 
   webserver:
