@@ -14,11 +14,11 @@ deliveryId = (deliveryId.replace("T", " "))
 
 
 try:
-    connection = psycopg2.connect(user="simonottosen",
-                                  password="postgresql",
-                                  host="127.0.0.1",
+    connection = psycopg2.connect(user="postgres",
+                                  password="postgres",
+                                  host="postgres_db",
                                   port="5432",
-                                  database="cphairport")
+                                  database="postgres")
     cursor = connection.cursor()
 
     postgres_insert_query = """ INSERT INTO waitingtime (t2WaitingTime, t2WaitingTimeInterval, deliveryId) VALUES (%s,%s,%s)"""
