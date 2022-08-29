@@ -10,4 +10,4 @@ COPY Pipfile /project/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY project/app.py /project/app.py
-CMD streamlit run project/app.py
+CMD streamlit run /project/app.py
