@@ -1,4 +1,4 @@
-CREATE TABLE waitingtime (
+CREATE TABLE IF NOT EXISTS waitingtime (
     id SERIAL PRIMARY KEY,
     t2WaitingTime int NOT NULL,
     t2WaitingTimeInterval character varying(255) NOT NULL,
