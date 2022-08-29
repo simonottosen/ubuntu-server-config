@@ -79,6 +79,26 @@ services:
       POSTGRES_USER: postgres
       DB_PORT: 5432
     restart: unless-stopped
+    
+  cph_frontend:
+    build: ./cph/frontend
+    container_name: "cph_frontend"
+    volumes:
+      - ./cph:/frontend/project
+    depends_on:
+      - cph_postgres_db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      DB_PORT: 5432
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cph.rule=Host(`cph.simonottosen.dk`)"
+      - "traefik.http.routers.cph.entrypoints=websecure"
+      - "traefik.http.routers.cph.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.cph.loadbalancer.server.port=8501"
 
 
   webserver:
