@@ -16,7 +16,7 @@ deliveryId = (deliveryId.replace("T", " "))
 try:
     connection = psycopg2.connect(user="postgres",
                                   password="postgres",
-                                  host="postgres_db",
+                                  host="cph_postgres_db",
                                   port="5432",
                                   database="postgres")
     cursor = connection.cursor()
