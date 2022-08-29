@@ -20,7 +20,10 @@ fastapi-sqlalchemy = "*"
 pydantic = "*"
 psycopg2 = "*"
 requests = "*"
-supabase = "*"
+schedule = "*"
+time = "*"
+datetime = "*"
+json = "*"
 
 [requires]
 python_version = "3.7"
