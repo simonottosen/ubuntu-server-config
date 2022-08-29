@@ -58,9 +58,9 @@ def load_data():
 df = load_data()
 st.title("CPH Security Queue")
 
-
 st.write("Overview of data:")
 st.write(
     pd.DataFrame(df)
 )
-st.line_chart(df)
+dfchart = pd.concat([df['Timestamp'], df['Waitingtime']], axis=1, keys=['Timestamp', 'Waitingtime'])
+st.line_chart(dfchart)
