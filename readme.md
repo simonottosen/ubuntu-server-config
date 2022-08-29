@@ -1,5 +1,10 @@
 # Server configuration
 
+## To-do
+- Automatic backup of the database
+- Environment variable
+- Front-end to read data
+
 ## Deployment
 Deploy the latest to the hook
 ```
