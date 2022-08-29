@@ -62,5 +62,5 @@ st.write("Overview of data:")
 st.write(
     pd.DataFrame(df)
 )
-dfchart = pd.concat([df['Timestamp'], df['Waitingtime']], axis=1, keys=['Timestamp', 'Waitingtime'])
+dfchart = pd.concat(df['Waitingtime'], [df['Timestamp']], axis=1, keys=['Waitingtime', 'Timestamp'])
 st.line_chart(dfchart)
