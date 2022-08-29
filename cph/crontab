@@ -1,2 +1,1 @@
-PATH=/usr/local/bin
-*/5 * * * * python /code/fetchwaitingtime.py > /proc/1/fd/1 2>/proc/1/fd/2
+*/5 * * * * /usr/local/bin/python /code/fetchwaitingtime.py > /proc/1/fd/1 2>/proc/1/fd/2
