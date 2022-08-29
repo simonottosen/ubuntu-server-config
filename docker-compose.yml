@@ -50,7 +50,7 @@ services:
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
 
-  postgres_db:
+  cph_postgres_db:
     image: postgres
     container_name: "cph_postgres_db"
     environment: 
