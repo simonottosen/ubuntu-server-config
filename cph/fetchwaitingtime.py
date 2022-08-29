@@ -5,8 +5,6 @@ from datetime import datetime
 import time
 import schedule
 
-starttime = time.time()
-while True:
     response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
     waitingtime = json.loads(response.text)
     waitingtime_json = json.dumps(waitingtime)
@@ -41,4 +39,3 @@ while True:
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
-    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
