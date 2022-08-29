@@ -69,8 +69,8 @@ services:
     container_name: "cph_fetchtime"
     volumes:
       - ./cph:/code
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     depends_on:
       - cph_postgres_db
     environment:
