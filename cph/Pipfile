@@ -20,8 +20,6 @@ fastapi-sqlalchemy = "*"
 pydantic = "*"
 psycopg2 = "*"
 requests = "*"
-schedule = "*"
-time = "*"
 datetime = "*"
 
 [requires]
