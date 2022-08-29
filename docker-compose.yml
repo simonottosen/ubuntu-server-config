@@ -72,7 +72,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres_db
+      - cph_postgres_db
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
