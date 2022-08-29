@@ -2,8 +2,6 @@ import psycopg2
 import requests
 import json
 from datetime import datetime
-import time
-import schedule
 
     response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
     waitingtime = json.loads(response.text)
