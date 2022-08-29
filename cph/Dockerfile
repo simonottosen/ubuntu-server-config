@@ -8,5 +8,7 @@ COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY fetchwaitingtime.py /code/
+RUN apt-get install -y cron
+ADD cronjob /etc/cron.d/
 EXPOSE 8000
 CMD ["python", "fetchwaitingtime.py"]
