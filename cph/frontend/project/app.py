@@ -20,7 +20,7 @@ try:
                          
                                   database="postgres")
     cursor = connection.cursor()
-    postgreSQL_select_Query =    "SELECT * FROM waitingtime " + "WHERE deliveryId >= '{}' ".format(today.isoformat())
+    postgreSQL_select_Query =    "SELECT * FROM waitingtime"
 
     cursor.execute(postgreSQL_select_Query)
     print("Selecting rows from waitingtime table using cursor.fetchall")
