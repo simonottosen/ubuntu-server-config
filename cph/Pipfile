@@ -23,7 +23,6 @@ requests = "*"
 schedule = "*"
 time = "*"
 datetime = "*"
-json = "*"
 
 [requires]
 python_version = "3.7"
