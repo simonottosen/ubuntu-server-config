@@ -4,10 +4,10 @@ import json
 from datetime import datetime
 import os
 
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
 POSTGRES_PASSWORD = "k5@J6"
-POSTGRES_DB = os.environ.get("POSTGRES_DB")
-POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_DB = "postgres"
+POSTGRES_USER = "postgres"
+POSTGRES_PORT = "5432"
 
 response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
 waitingtime = json.loads(response.text)
