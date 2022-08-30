@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 import os
 
-POSTGRES_PASSWORD = "k5@J6"
+POSTGRES_PASSWORD = "QEfaqBHkitiJqqLs"
 POSTGRES_DB = "postgres"
 POSTGRES_USER = "postgres"
 POSTGRES_PORT = "5432"
