@@ -26,7 +26,7 @@ pandas = "*"
 numpy = "*"
 matplotlib = "*"
 streamlit = "*"
-bokehb = "*"
+bokeh = "*"
 altair = "*"
 
 [requires]
