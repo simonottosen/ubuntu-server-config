@@ -2,6 +2,12 @@ import psycopg2
 import requests
 import json
 from datetime import datetime
+import os
+
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
 
 response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
 waitingtime = json.loads(response.text)
@@ -12,11 +18,11 @@ deliveryId = (waitingtime["deliveryId"])
 deliveryId = (deliveryId.replace("T", " ")) 
 print(t2WaitingTime, deliveryId)
 try:
-    connection = psycopg2.connect(user="postgres",
-                                  password="postgres",
+    connection = psycopg2.connect(user=POSTGRES_USER,
+                                  password=POSTGRES_PASSWORD,
                                   host="cph_postgres_db",
-                                  port="5432",
-                                  database="postgres")
+                                  port=POSTGRES_PORT,
+                                  database=POSTGRES_DB)
     cursor = connection.cursor()
 
     postgres_insert_query = """ INSERT INTO waitingtime (t2WaitingTime, t2WaitingTimeInterval, deliveryId) VALUES (%s,%s,%s)"""
