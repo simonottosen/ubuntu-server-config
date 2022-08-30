@@ -5,6 +5,24 @@
 - Environment variable
 - Front-end to read data
 
+## Usage of the API
+
+Get all
+```
+https://cphapi.simonottosen.dk/waitingtime
+```
+
+Get all times with a waiting time less that 4 minutes
+```
+https://cphapi.simonottosen.dk/waitingtime?t2waitingtime=lt.4
+```
+
+Select only a subset of the data
+```
+https://cphapi.simonottosen.dk/waitingtime?select=t2waitingtime,deliveryid
+```
+
+
 ## Deployment
 Deploy the latest to the hook
 ```
