@@ -2,7 +2,6 @@
 CPH Security Queue
 """
 import matplotlib.pyplot as plt
-import psycopg2
 import requests
 import json
 from datetime import datetime
@@ -11,59 +10,84 @@ from datetime import datetime, timezone
 from pandas import Series
 import numpy as np
 import streamlit as st
-import os
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-POSTGRES_DB = os.environ.get("POSTGRES_DB")
-POSTGRES_USER = os.environ.get("POSTGRES_USER")
+import urllib.request
+import altair as alt
+from bokeh.plotting import figure
 
 @st.experimental_memo
 def load_data():
-    try:
-        connection = psycopg2.connect(user=POSTGRES_USER,
-                                  password=POSTGRES_PASSWORD,
-                                  host="cph_postgres_db",
-                                  port=POSTGRES_PORT,
-                                  database=POSTGRES_DB)
-        cursor = connection.cursor()
-        postgreSQL_select_Query =    "SELECT * FROM waitingtime"
-
-        cursor.execute(postgreSQL_select_Query)
-        print("Selecting rows from waitingtime table using cursor.fetchall")
-        waitingtime = cursor.fetchall()
-
-        print("Print each row and it's columns values")
-        #for row in waitingtime:
-        #    print("Id = ", row[0], )
-        #    print("t2WaitingTime = ", row[1])
-        #    print("t2WaitingTimeInterval = ", row[2])
-        #    print("deliveryId  = ", row[3], "\n")
-
-    except (Exception, psycopg2.Error) as error:
-        print("Error while fetching data from PostgreSQL", error)
-
-    finally:
-        # closing database connection.
-        if connection:
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-    dataframe = pd.DataFrame(waitingtime,columns=['ID', 'Waitingtime', 'MintoMMax', 'Timestamp'])
-    StartTime = dataframe["Timestamp"]
+    data = urllib.request.urlopen("https://cphapi.simonottosen.dk/waitingtime?select=id,t2waitingtime,deliveryid").read()
+    output = json.loads(data)
+    dataframe = pd.DataFrame(output)
+    StartTime = dataframe["deliveryid"]
     StartTime = pd.to_datetime(StartTime)
     StartTime = StartTime.apply(lambda t: t.replace(tzinfo=None))
     StartTime = StartTime + pd.DateOffset(hours=2)
-    dataframe["Timestamp"] = StartTime
+    dataframe["deliveryid"] = StartTime
     dataframe["Time"] = StartTime.dt.time
     dataframe["Date"] = StartTime.dt.date
     return dataframe
 
-df = load_data()
-st.title("CPH Security Queue")
+def load_latest():
+    data = urllib.request.urlopen("https://cphapi.simonottosen.dk/waitingtime?select=id,t2waitingtime,deliveryid&order=id.desc&limit=2").read()
+    output = json.loads(data)
+    dataframe = pd.DataFrame(output)
+    StartTime = dataframe["deliveryid"]
+    StartTime = pd.to_datetime(StartTime)
+    StartTime = StartTime.apply(lambda t: t.replace(tzinfo=None))
+    StartTime = StartTime + pd.DateOffset(hours=2)
+    dataframe["deliveryid"] = StartTime
+    dataframe["Time"] = StartTime.dt.time
+    dataframe["Date"] = StartTime.dt.date
+    delta = dataframe["t2waitingtime"][0] - dataframe["t2waitingtime"][1]
+    latest = dataframe["t2waitingtime"][0]
+    delta = np.int16(delta).item()
+    latest = np.int16(latest).item()
+    M = ' Minutes'
+    latest = (str(latest) + M)
+    return latest, delta
 
-st.write("Overview of data:")
-st.write(
-    pd.DataFrame(df)
-)
-dfchart = pd.concat(df['Waitingtime'], [df['Timestamp']], axis=1, keys=['Waitingtime', 'Timestamp'])
-st.line_chart(dfchart)
+    
+
+st.set_page_config(page_icon="✈️", page_title="CPH Security Queue")
+
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+
+footer {
+	
+	visibility: hidden;
+	
+	}
+footer:after {
+	content:'Made with love by Simon Ottosen'; 
+	visibility: visible;
+	display: block;
+	position: relative;
+	#background-color: red;
+	padding: 5px;
+	top: 2px;
+}
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
+
+
+df = load_data()
+currenttime = load_latest()
+st.title("CPH Security Queue")
+st.metric(label="Current waiting time", value=currenttime[0], delta=currenttime[1])
+
+p = figure(
+     title='Overview of CPH queuing time',
+     x_axis_type='datetime',
+     x_axis_label='Time',
+     y_axis_label='Queue')
+
+p.line(df["deliveryid"], df["t2waitingtime"], legend_label='Trend', line_width=2)
+
+st.bokeh_chart(p, use_container_width=True)
+st.dataframe(df)
+
