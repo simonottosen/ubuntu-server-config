@@ -84,6 +84,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.hjem.rule=Host(`cphdatabase.simonottosen.dk`)"
