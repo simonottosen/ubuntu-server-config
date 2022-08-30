@@ -71,6 +71,27 @@ services:
       - ./cph:/frontend/project
     restart: unless-stopped
 
+  postgrest:
+    image: postgrest/postgrest
+    environment:
+      PGRST_DB_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@cph_postgres_db:${POSTGRES_PORT}/${POSTGRES_DB}
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+    depends_on:
+      - cph_postgres_db
+    restart: unless-stopped
+    environment: 
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hjem.rule=Host(`cphdatabase.simonottosen.dk`)"
+      - "traefik.http.routers.hjem.entrypoints=websecure"
+      - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.hjem.loadbalancer.server.port=3000"
+
+
+
   cph_fetchtime:
     build: ./cph/
     container_name: "cph_fetchtime"
