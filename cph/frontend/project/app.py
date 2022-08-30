@@ -11,17 +11,20 @@ from datetime import datetime, timezone
 from pandas import Series
 import numpy as np
 import streamlit as st
-
+import os
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
 
 @st.experimental_memo
 def load_data():
     try:
-        connection = psycopg2.connect(user="postgres",
-                                    password="postgres",
-                                    host="cph_postgres_db",
-                                    port="5432",
-                            
-                                    database="postgres")
+        connection = psycopg2.connect(user=POSTGRES_USER,
+                                  password=POSTGRES_PASSWORD,
+                                  host="cph_postgres_db",
+                                  port=POSTGRES_PORT,
+                                  database=POSTGRES_DB)
         cursor = connection.cursor()
         postgreSQL_select_Query =    "SELECT * FROM waitingtime"
 
