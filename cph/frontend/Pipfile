@@ -26,6 +26,8 @@ pandas = "*"
 numpy = "*"
 matplotlib = "*"
 streamlit = "*"
+bokehb = "*"
+altair = "*"
 
 [requires]
 python_version = "3.8"
