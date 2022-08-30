@@ -68,6 +68,7 @@ services:
     volumes:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./cph:/frontend/project
     restart: unless-stopped
 
   cph_fetchtime:
