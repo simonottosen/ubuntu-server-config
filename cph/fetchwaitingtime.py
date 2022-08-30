@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
-POSTGRES_PASSWORD = "k5@J6##&iDCJ8ePE"
+POSTGRES_PASSWORD = "k5@J6"
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 
