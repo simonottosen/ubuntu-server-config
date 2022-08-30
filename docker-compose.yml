@@ -54,11 +54,11 @@ services:
     image: postgres
     container_name: "cph_postgres_db"
     environment: 
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
@@ -69,15 +69,13 @@ services:
     container_name: "cph_fetchtime"
     volumes:
       - ./cph:/code
-#    ports:
-#      - "8000:8000"
     depends_on:
       - cph_postgres_db
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      DB_PORT: 5432
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     restart: unless-stopped
     
   cph_frontend:
@@ -88,10 +86,10 @@ services:
     depends_on:
       - cph_postgres_db
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      DB_PORT: 5432
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
