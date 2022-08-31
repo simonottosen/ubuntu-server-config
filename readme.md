@@ -23,6 +23,13 @@ https://cphapi.simonottosen.dk/waitingtime?select=t2waitingtime,deliveryid
 ```
 
 
+Get the current waiting time
+```
+https://cphapi.simonottosen.dk/waitingtime?select=t2waitingtime&order=id.desc&limit=1
+```
+
+
+
 ## Deployment
 Deploy the latest to the hook
 ```
