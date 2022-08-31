@@ -2,8 +2,8 @@
 
 ## To-do
 - Automatic backup of the database
-- Environment variable
-- Front-end to read data
+- Environment variable also for the fetch-time container
+- Front-end development
 
 ## Usage of the API
 
