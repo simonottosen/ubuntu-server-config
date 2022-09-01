@@ -38,9 +38,16 @@ def load_latest():
     latest = dataframe["t2waitingtime"][0]
     delta = np.int16(delta).item()
     latest = np.int16(latest).item()
-    M = ' Minutes'
-    latest = (str(latest) + M)
-    delta = (str(delta) + M)
+    M = ' minute'
+    S = 's'
+    if latest <= 1:
+        latest = (str(latest) + M)
+    else:
+        latest = (str(latest) + M + S)
+    if delta <= 1:
+        delta = (str(delta) + M)
+    else:
+        delta = (str(delta) + M + S)
     latest_update = dataframe["deliveryid"]
     return latest, delta, latest_update
 
@@ -54,8 +61,12 @@ def load_last_two_hours():
         avg = sum(l) / len(l) 
         return avg
     average = round(Average(two_hours_avg))
-    M = ' Minutes'
-    average = (str(average) + M)
+    M = ' minute'
+    S = 's'
+    if average <= 1:
+        average = (str(average) + M)
+    else:
+        average = (str(average) + M + S)
     return average    
 
 
@@ -124,6 +135,8 @@ footer:after {
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 # Using object notation
+M = " minute"
+S = "s"
 
 st.sidebar.header("Get queing time for your upcoming flight")
 with st.sidebar.form("Input"):
@@ -140,7 +153,11 @@ if btnResult:
         with st.spinner('Estimating queue...'):
             t.sleep(2)
         prediction = new_model(test)
-        st.subheader('Expected queue at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)) + ' is ' + str(prediction) + ' minutes ✈️')
+        if prediction <= 1:
+            prediction = (str(prediction) + M)
+        else:
+            prediction = (str(prediction) + M + S)
+        st.subheader('Expected queue at ' + str(time.strftime("%H:%M")) + ' on ' + str(findDay(date)) + ' is .. ' + str(prediction) + '✈️')
 
 dataframe = load_data()
 currenttime = load_latest()
@@ -149,8 +166,13 @@ average = load_last_two_hours()
 st.title("CPH Airport Security Queue ✈️ 👮🏼 ")
 in2hours = datetime.datetime.now() + timedelta(hours=2)
 in2hours = pd.DataFrame({'deliveryid': [in2hours]}) 
+M = " minute"
+S = "s"
 in2hours = new_model(in2hours)
-in2hours = str(in2hours) + ' Minutes'
+if in2hours <= 1:
+    in2hours = (str(in2hours) + M)
+else:
+    in2hours = (str(in2hours) + M + S)
 
 col1, col2, col3 = st.columns(3)
 col1.metric(label="Current waiting time ⏰", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
