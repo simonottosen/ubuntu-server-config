@@ -1,7 +1,8 @@
 # Server configuration
 
 ## To-do
-- Automatic backup of the database
+- Automatic backup of the database 
+-- docker exec -t cph_postgres_db pg_dumpall -c -U postgres | gzip > dump_$(date +"%Y-%m-%d").gz
 - Environment variable also for the fetch-time container
 - Front-end development
 
