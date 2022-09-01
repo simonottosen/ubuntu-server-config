@@ -5,22 +5,14 @@ import matplotlib.pyplot as plt
 import requests
 import json
 import pandas as pd
-from datetime import datetime, timezone
-from pandas import Series
+from datetime import datetime, timezone, timedelta
 import numpy as np
 import streamlit as st
 import urllib.request
-import altair as alt
 import datetime
 import calendar
-from statsmodels.tsa.seasonal import seasonal_decompose
-from statsmodels.graphics.tsaplots import plot_acf
-from scipy.stats import t
-from sklearn.model_selection import TimeSeriesSplit, train_test_split
-from sklearn.metrics import mean_absolute_error
 import datetime
 from lightgbm import LGBMRegressor
-import seaborn as sns
 import time as t
 
 @st.experimental_memo
@@ -153,8 +145,14 @@ dataframe = load_data()
 currenttime = load_latest()
 average = load_last_two_hours()
 st.title("✈️ CPH Security Queue")
-col1, col2 = st.columns(2)
+in2hours = datetime.datetime.now() + timedelta(hours=2)
+in2hours = pd.DataFrame({'deliveryid': [in2hours]}) 
+in2hours = new_model(in2hours)
+in2hours = str(in2hours) + ' Minutes'
+
+col1, col2, col3 = st.columns(3)
 col1.metric(label="Current waiting time", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
 col2.metric(label="Average waiting time in last 2 hours", value=average)
+col3.metric(label="Expected waiting time in 2 hours", value=in2hours)
 
 st.line_chart(dataframe, x="Date and time", y="Queue", )
