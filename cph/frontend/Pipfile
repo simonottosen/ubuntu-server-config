@@ -28,6 +28,12 @@ matplotlib = "*"
 streamlit = "*"
 #bokeh = "~=2.4.3"
 altair = "*"
+seaborn = "*"
+lightgbm = "*"
+sklearn = "*"
+statsmodels = "*"
+scipy = "*"
+
 
 [requires]
 python_version = "3.8"

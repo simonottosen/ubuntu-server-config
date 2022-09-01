@@ -4,7 +4,6 @@ CPH Security Queue
 import matplotlib.pyplot as plt
 import requests
 import json
-from datetime import datetime
 import pandas as pd
 from datetime import datetime, timezone
 from pandas import Series
@@ -14,6 +13,15 @@ import urllib.request
 import altair as alt
 import datetime
 import calendar
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf
+from scipy.stats import t
+from sklearn.model_selection import TimeSeriesSplit, train_test_split
+from sklearn.metrics import mean_absolute_error
+import datetime
+from lightgbm import LGBMRegressor
+import seaborn as sns
+import time as t
 
 @st.experimental_memo
 def load_data():
@@ -63,6 +71,39 @@ def findDay(date):
     born = datetime.datetime.strptime(date, '%Y-%m-%d').weekday()
     return (calendar.day_name[born])
 
+def new_model(test):
+    modeldatetime = test["deliveryid"]
+    modeldatetime = pd.to_datetime(modeldatetime)
+    test["deliveryid"] = modeldatetime
+    test = test.set_index(test.deliveryid)
+    test.drop('deliveryid', axis=1, inplace=True)
+    test['hour'] = test.index.hour
+    test['day'] = test.index.day
+    test['month'] = test.index.month
+    test['weekday'] = test.index.weekday
+    data = urllib.request.urlopen("https://cphapi.simonottosen.dk/waitingtime?select=id,t2waitingtime,deliveryid").read()
+    output = json.loads(data)
+    dataframe = pd.DataFrame(output)
+    StartTime = dataframe["deliveryid"]
+    StartTime = pd.to_datetime(StartTime)
+    StartTime = StartTime.apply(lambda t: t.replace(tzinfo=None))
+    StartTime = StartTime + pd.DateOffset(hours=2)
+    dataframe["deliveryid"] = StartTime
+    df = dataframe.set_index(dataframe.deliveryid)
+    df.drop('deliveryid', axis=1, inplace=True)
+    df['hour'] = df.index.hour
+    df['day'] = df.index.day
+    df['month'] = df.index.month
+    df['weekday'] = df.index.weekday
+    df.drop(['id'], axis=1, inplace=True)
+    X = df.drop('t2waitingtime', axis=1)
+    y = df['t2waitingtime']
+    X_train = X.iloc[:]
+    y_train = y.iloc[:]    
+    model = LGBMRegressor(random_state=42)
+    model.fit(X_train, y_train)
+    predict = model.predict(test)
+    return round(predict[0])
 
 
 st.set_page_config(page_icon="✈️", page_title="CPH Security Queue")
@@ -92,16 +133,21 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Using object notation
 
 st.sidebar.header("Get queing time for your upcoming flight")
+with st.sidebar.form("Input"):
+    date = st.sidebar.date_input(
+        "On what date is your flight?")
+    time = st.sidebar.time_input('At what time would you expect to arrive at the airport?', help="Usually you should arrive approx. 2 hours before your flight if bringing luggage and 1 hour before if you are only bringing carry-on")
+    datetime_queue_input_text = ('You will be flying out at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)))
+    datetime_queue_input = (str(date) + ' ' + str(time))
+    test = pd.DataFrame({'deliveryid': [datetime_queue_input]}) 
+    btnResult = st.sidebar.button('Calculate expected security queue')
 
-date = st.sidebar.date_input(
-     "On what date is your flight?")
-
-time = st.sidebar.time_input('At what time would you expect to arrive at the airport?', help="Usually you should arrive approx. 2 hours before your flight if bringing luggage and 1 hour before if you are only bringing carry-on")
-datetime_queue_input = ('You will be flying out at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)))
-
-st.sidebar.subheader(datetime_queue_input)
-st.sidebar.button('Calculate expected security queue')
-
+if btnResult:
+    with st.sidebar:
+        with st.spinner('Estimating queue...'):
+            t.sleep(2)
+        prediction = new_model(test)
+        st.subheader('Expected queue at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)) + ' is ' + str(prediction) + ' minutes ✈️')
 
 dataframe = load_data()
 currenttime = load_latest()
