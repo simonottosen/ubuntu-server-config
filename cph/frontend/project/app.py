@@ -171,8 +171,8 @@ with st.form("Input"):
     btnResult = st.form_submit_button('Calculate expected security queue')
     if btnResult:
         with st.spinner('Estimating queue...'):
+            prediction = new_model(test)
             t.sleep(2)
-        prediction = new_model(test)
         if prediction == 1:
             prediction = (str(prediction) + M)
         else:
