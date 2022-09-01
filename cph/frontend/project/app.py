@@ -41,7 +41,8 @@ def load_latest():
     M = ' Minutes'
     latest = (str(latest) + M)
     delta = (str(delta) + M)
-    return latest, delta
+    latest_update = dataframe["deliveryid"]
+    return latest, delta, latest_update
 
 
 def load_last_two_hours():
@@ -98,7 +99,7 @@ def new_model(test):
     return round(predict[0])
 
 
-st.set_page_config(page_icon="✈️", page_title="CPH Security Queue")
+st.set_page_config(page_icon="👮🏼", page_title="CPH Security Queue")
 
 
 hide_streamlit_style = """
@@ -111,7 +112,7 @@ footer {
 	
 	}
 footer:after {
-	content:'Made with love by Simon Ottosen'; 
+	content:'Made with ❤️ by Simon Ottosen'; 
 	visibility: visible;
 	display: block;
 	position: relative;
@@ -143,16 +144,17 @@ if btnResult:
 
 dataframe = load_data()
 currenttime = load_latest()
+latest_update = load_latest()
 average = load_last_two_hours()
-st.title("✈️ CPH Security Queue")
+st.title("CPH Airport Security Queue ✈️ 👮🏼 ")
 in2hours = datetime.datetime.now() + timedelta(hours=2)
 in2hours = pd.DataFrame({'deliveryid': [in2hours]}) 
 in2hours = new_model(in2hours)
 in2hours = str(in2hours) + ' Minutes'
 
 col1, col2, col3 = st.columns(3)
-col1.metric(label="Current waiting time", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
-col2.metric(label="Average waiting time in last 2 hours", value=average)
-col3.metric(label="Expected waiting time in 2 hours", value=in2hours)
+col1.metric(label="Current waiting time ⏰", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
+col2.metric(label="Average waiting time in last 2 hours 🕵🏼", value=average)
+col3.metric(label="Expected waiting time in 2 hours 🔮", value=in2hours)
 
 st.line_chart(dataframe, x="Date and time", y="Queue", )
