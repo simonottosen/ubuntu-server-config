@@ -40,5 +40,6 @@ simonottosen@servermat:~/mediaserver$ https POST webhook.simonottosen.dk/webhook
 
 ## When starting up a new server from bare metal
 - Run git pull on the repostitory
+- Set up .env (can be found in Dashlane)
 - Run script.sh
 - Test that the automatic deployment works
