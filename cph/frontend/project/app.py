@@ -37,19 +37,20 @@ def load_latest():
     delta = dataframe["t2waitingtime"][0] - dataframe["t2waitingtime"][1]
     latest = dataframe["t2waitingtime"][0]
     delta = np.int16(delta).item()
+    deltapure = np.int16(delta).item()
     latest = np.int16(latest).item()
     M = ' minute'
     S = 's'
-    if latest <= 1:
+    if latest == 1:
         latest = (str(latest) + M)
     else:
         latest = (str(latest) + M + S)
-    if delta <= 1:
+    if delta == 1:
         delta = (str(delta) + M)
     else:
         delta = (str(delta) + M + S)
     latest_update = dataframe["deliveryid"]
-    return latest, delta, latest_update
+    return latest, delta, deltapure, latest_update
 
 
 def load_last_two_hours():
@@ -63,7 +64,7 @@ def load_last_two_hours():
     average = round(Average(two_hours_avg))
     M = ' minute'
     S = 's'
-    if average <= 1:
+    if average == 1:
         average = (str(average) + M)
     else:
         average = (str(average) + M + S)
@@ -113,9 +114,12 @@ def new_model(test):
 st.set_page_config(page_icon="👮🏼", page_title="CPH Security Queue")
 
 
+
 hide_streamlit_style = """
             <style>
-            #MainMenu {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 1rem;}
 
 footer {
 	
@@ -138,45 +142,39 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 M = " minute"
 S = "s"
 
-st.sidebar.header("Get queing time for your upcoming flight")
-with st.sidebar.form("Input"):
-    date = st.sidebar.date_input(
-        "On what date is your flight?")
-    time = st.sidebar.time_input('At what time would you expect to arrive at the airport?', help="Usually you should arrive approx. 2 hours before your flight if bringing luggage and 1 hour before if you are only bringing carry-on")
-    datetime_queue_input_text = ('You will be flying out at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)))
-    datetime_queue_input = (str(date) + ' ' + str(time))
-    test = pd.DataFrame({'deliveryid': [datetime_queue_input]}) 
-    btnResult = st.sidebar.button('Calculate expected security queue')
 
-if btnResult:
-    with st.sidebar:
-        with st.spinner('Estimating queue...'):
-            t.sleep(2)
-        prediction = new_model(test)
-        if prediction <= 1:
-            prediction = (str(prediction) + M)
-        else:
-            prediction = (str(prediction) + M + S)
-        st.subheader('Expected queue at ' + str(time.strftime("%H:%M")) + ' on ' + str(findDay(date)) + ' is .. ' + str(prediction) + '✈️')
-
-dataframe = load_data()
 currenttime = load_latest()
 latest_update = load_latest()
 average = load_last_two_hours()
-st.title("CPH Airport Security Queue ✈️ 👮🏼 ")
-in2hours = datetime.datetime.now() + timedelta(hours=2)
-in2hours = pd.DataFrame({'deliveryid': [in2hours]}) 
+st.title("CPH Security Queue ✈️ 👮🏼 ")
+#in2hours = datetime.datetime.now() + timedelta(hours=2)
+#in2hours = pd.DataFrame({'deliveryid': [in2hours]}) 
 M = " minute"
 S = "s"
-in2hours = new_model(in2hours)
-if in2hours <= 1:
-    in2hours = (str(in2hours) + M)
+
+col1, col2 = st.columns(2)
+if currenttime[2] == 0:
+    col1.metric(label="Current waiting time ⏰", value=currenttime[0])
 else:
-    in2hours = (str(in2hours) + M + S)
-
-col1, col2, col3 = st.columns(3)
-col1.metric(label="Current waiting time ⏰", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
+    col1.metric(label="Current waiting time ⏰", value=currenttime[0], delta=currenttime[1], delta_color="inverse")
 col2.metric(label="Average waiting time in last 2 hours 🕵🏼", value=average)
-col3.metric(label="Expected waiting time in 2 hours 🔮", value=in2hours)
+#col3.metric(label="Expected waiting time in 2 hours 🔮", value=in2hours)
 
-st.line_chart(dataframe, x="Date and time", y="Queue", )
+with st.form("Input"):
+    st.subheader("Get queing time for your upcoming flight")
+    date = st.date_input(
+        "On what date is your flight?")
+    time = st.time_input('At what time would you expect to arrive at the airport?', help="Usually you should arrive approx. 2 hours before your flight if bringing luggage and 1 hour before if you are only bringing carry-on")
+    datetime_queue_input_text = ('You will be flying out at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)))
+    datetime_queue_input = (str(date) + ' ' + str(time))
+    test = pd.DataFrame({'deliveryid': [datetime_queue_input]}) 
+    btnResult = st.form_submit_button('Calculate expected security queue')
+    if btnResult:
+        with st.spinner('Estimating queue...'):
+            t.sleep(2)
+        prediction = new_model(test)
+        if prediction == 1:
+            prediction = (str(prediction) + M)
+        else:
+            prediction = (str(prediction) + M + S)
+        st.write('Expected queue at ' + str(time.strftime("%H:%M")) + ' on ' + str(findDay(date)) + ' is ' + str(prediction) + ' ✈️')
