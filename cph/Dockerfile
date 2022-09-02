@@ -1,11 +1,15 @@
 # Pull base image
 FROM python:3.7
 # Set environment varibles
-RUN cat .env > /code/environment
+RUN echo $POSTGRES_PASSWORD > environment
+RUN echo $POSTGRES_DB >> environment
+RUN echo $POSTGRES_USER >> environment
+RUN echo $POSTGRES_PORT >> environment
 WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
 COPY Pipfile /code/
+COPY environment /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
@@ -15,3 +19,10 @@ COPY crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
 RUN /usr/bin/crontab /etc/cron.d/crontab
 CMD ["cron", "-f"]
+
+
+
+POSTGRES_PASSWORD=QEfaqBHkitiJqqLs
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PORT=5432
