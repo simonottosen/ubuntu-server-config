@@ -7,8 +7,10 @@ RUN pip install pipenv
 COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
+RUN echo $POSTGRES_PASSWORD > environment
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
 COPY cphairportqueue-firebase-key.json /code/cphairportqueue-firebase-key.json
+COPY ../.env /code/.env
 RUN apt-get update && apt-get -y install cron nano
 COPY crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
