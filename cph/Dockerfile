@@ -8,6 +8,7 @@ COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
+COPY cphairportqueue-firebase-key.json /code/cphairportqueue-firebase-key.json
 RUN apt-get update && apt-get -y install cron nano
 COPY crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
