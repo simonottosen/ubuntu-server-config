@@ -13,5 +13,5 @@ RUN apt-get update && apt-get -y install cron nano
 COPY crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
 RUN /usr/bin/crontab /etc/cron.d/crontab
-RUN crontab env.txt
+RUN crontab /code/env.txt
 CMD ["cron", "-f"]
