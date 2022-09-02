@@ -9,7 +9,7 @@ from firebase_admin import firestore
 import urllib.request
 
 environment = []
-with open("environment", "r") as file:
+with open("/code/environment", "r") as file:
     rows = ( line.split('=') for line in file)
     dict = { row[0]:row[1] for row in rows }
 for item in dict:
