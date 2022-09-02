@@ -8,7 +8,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import urllib.request
 
-with open('.env') as f:
+with open('env.txt') as f:
     for line in f:
         if 'export' not in line:
             continue
