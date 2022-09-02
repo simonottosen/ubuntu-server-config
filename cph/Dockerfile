@@ -1,13 +1,13 @@
 # Pull base image
 FROM python:3.7
 # Set environment varibles
+RUN cat .env > /code/environment
 WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
 COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
-RUN cat .env > /code/environment
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
 COPY cphairportqueue-firebase-key.json /code/cphairportqueue-firebase-key.json
 RUN apt-get update && apt-get -y install cron nano
