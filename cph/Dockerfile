@@ -1,15 +1,14 @@
 # Pull base image
 FROM python:3.7
 # Set environment varibles
-RUN echo $POSTGRES_PASSWORD > environment
-RUN echo $POSTGRES_DB >> environment
-RUN echo $POSTGRES_USER >> environment
-RUN echo $POSTGRES_PORT >> environment
 WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
 COPY Pipfile /code/
-COPY environment /code/
+RUN echo $POSTGRES_PASSWORD > /code/environment
+RUN echo $POSTGRES_DB >> /code/environment
+RUN echo $POSTGRES_USER >> /code/environment
+RUN echo $POSTGRES_PORT >> /code/environment
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
