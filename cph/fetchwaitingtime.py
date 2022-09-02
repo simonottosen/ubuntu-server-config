@@ -17,10 +17,10 @@ with open('.env') as f:
         key, value = line.replace('export ', '', 1).strip().split('=', 1)
         os.environ[key] = value
 
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-POSTGRES_DB = os.environ.get("POSTGRES_DB")
-POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_DB = "postgres"
+POSTGRES_USER = "postgres"
+POSTGRES_PORT = "5432"
 
 response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
 waitingtime = json.loads(response.text)
