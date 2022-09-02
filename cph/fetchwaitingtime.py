@@ -18,9 +18,9 @@ with open('/code/env.txt') as f:
         os.environ[key] = value
 
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-POSTGRES_DB = "postgres"
-POSTGRES_USER = "postgres"
-POSTGRES_PORT = "5432"
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
 
 response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
 waitingtime = json.loads(response.text)
@@ -31,8 +31,8 @@ deliveryId = (waitingtime["deliveryId"])
 deliveryId = (deliveryId.replace("T", " ")) 
 print(t2WaitingTime, deliveryId)
 
-GOOGLE_APPLICATION_CREDENTIALS = 'cphairportqueue-firebase-key.json'
-cred = credentials.Certificate("cphairportqueue-firebase-key.json")
+GOOGLE_APPLICATION_CREDENTIALS = '/code/cphairportqueue-firebase-key.json'
+cred = credentials.Certificate("/code/cphairportqueue-firebase-key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
