@@ -43,18 +43,19 @@ try:
     count = cursor.rowcount
     print(count, "Record inserted successfully into CPH Waiting Time table")
     requests.get("https://hc-ping.com/443ecacf-ec17-4912-91e5-183957ba5e07", timeout=10)
-    
-    data = urllib.request.urlopen("https://cphapi.simonottosen.dk/waitingtime?select=id,t2waitingtime,deliveryid&order=id.desc&limit=1").read()
+    data = urllib.request.urlopen("https://cphapi.simonottosen.dk/waitingtime?&order=id.desc&limit=1").read()
     output = json.loads(data)
     aDict = output[0]
+    print(aDict)
     data = {
     u'id': str(aDict['id']),
     u't2waitingtime': str(aDict['t2waitingtime']),
     u't2waitingtimeinterval': str(aDict['t2waitingtimeinterval']),
     u'deliveryid': str(aDict['deliveryid'])
     }
-    print(aDict)
     db.collection(u'waitingtime').document(str(aDict['id'])).set(data)
+    print("PostgreSQL connection is closed")
+
 
 except (Exception, psycopg2.Error) as error:
     print("Failed to insert record into CPH Waiting Time table", error)
@@ -64,7 +65,5 @@ finally:
     if connection:
         cursor.close()
         connection.close()
-        print("PostgreSQL connection is closed")
-
 
 
