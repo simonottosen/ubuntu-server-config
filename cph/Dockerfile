@@ -7,6 +7,8 @@ RUN pip install pipenv
 COPY Pipfile /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
+RUN cat .env > environment
+COPY environment /code/environment
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
 COPY cphairportqueue-firebase-key.json /code/cphairportqueue-firebase-key.json
 RUN apt-get update && apt-get -y install cron nano

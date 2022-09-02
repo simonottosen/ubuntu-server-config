@@ -8,19 +8,18 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import urllib.request
 
-with open('/code/env.txt') as f:
-    for line in f:
-        if 'export' not in line:
-            continue
-        if line.startswith('#'):
-            continue
-        key, value = line.replace('export ', '', 1).strip().split('=', 1)
-        os.environ[key] = value
+environment = []
+with open("environment", "r") as file:
+    rows = ( line.split('=') for line in file)
+    dict = { row[0]:row[1] for row in rows }
+for item in dict:
+    environment.append(dict[item])
+environment = list(map(str.strip,environment))
 
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-POSTGRES_DB = os.environ.get("POSTGRES_DB")
-POSTGRES_USER = os.environ.get("POSTGRES_USER")
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
+POSTGRES_PASSWORD = environment[0]
+POSTGRES_DB = environment[1]
+POSTGRES_USER = environment[1]
+POSTGRES_PORT = environment[3]
 
 response = requests.get('https://cph-flightinfo-prod.azurewebsites.net//api/v1/waiting/get?type=ventetid')
 waitingtime = json.loads(response.text)
