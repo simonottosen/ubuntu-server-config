@@ -5,6 +5,7 @@ WORKDIR /code/
 # Install dependencies
 RUN pip install pipenv
 COPY Pipfile /code/
+COPY env.txt /code/
 RUN pipenv lock
 RUN pipenv install --system --dev
 COPY fetchwaitingtime.py /code/fetchwaitingtime.py
