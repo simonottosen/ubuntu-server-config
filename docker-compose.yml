@@ -31,7 +31,7 @@ services:
     image: tensorflow/tensorflow:latest-jupyter
     container_name: "jupyter"
     volumes:
-      - ./jupyter:/home/jovyan/work
+      - ./jupyter:/tf
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jupyter.rule=Host(`jupyter.simonottosen.dk`)"
