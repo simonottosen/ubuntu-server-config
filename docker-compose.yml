@@ -28,7 +28,7 @@ services:
 
   jupyter:
     restart: always
-    image: jupyter/datascience-notebook
+    image: tensorflow/tensorflow:latest-jupyter
     container_name: "jupyter"
     volumes:
       - ./jupyter:/home/jovyan/work
