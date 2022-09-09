@@ -168,7 +168,7 @@ with st.form("Input"):
     datetime_queue_input_text = ('You will be flying out at ' + str(time.strftime("%H:%M")) + ' on a ' + str(findDay(date)))
     datetime_queue_input = (str(date) + ' ' + str(time))
     test = pd.DataFrame({'deliveryid': [datetime_queue_input]}) 
-    st.write('Calculation might take a few seconds ..')
+    st.write('Calculation might take a few seconds')
     btnResult = st.form_submit_button('Calculate')
     if btnResult:
         with st.spinner('Estimating queue...'):
