@@ -44,6 +44,26 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
 
+  speedtest:
+      container_name: speedtest
+      image: henrywhitaker3/speedtest-tracker
+      volumes:
+          - /config/speedtest:/config
+      environment:
+          - OOKLA_EULA_GDPR=true
+      logging:
+          driver: "json-file"
+          options:
+              max-file: "10"
+              max-size: "200k"
+      restart: unless-stopped
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.speedtest.rule=Host(`speedtest.simonottosen.dk`)"
+        - "traefik.http.routers.speedtest.entrypoints=websecure"
+        - "traefik.http.routers.speedtest.tls.certresolver=mytlschallenge"
+        - "traefik.http.services.speedtest.loadbalancer.server.port=80"
+
 
   hjem:
     image: tpanum/hjem
