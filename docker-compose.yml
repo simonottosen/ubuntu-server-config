@@ -69,6 +69,15 @@ services:
     container_name: omada-controller
     image: mbentley/omada-controller:latest
     restart: unless-stopped
+    ports:
+      - 8088:8088
+      - 8043:8043
+      - 27001:27001
+      - 29812:29812
+      - 29813:29813
+      - 29811:29811
+      - 29814:29814
+      - 29810:29810
     environment:
       - SHOW_SERVER_LOGS=true
       - SHOW_MONGODB_LOGS=false
