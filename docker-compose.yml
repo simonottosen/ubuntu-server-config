@@ -19,7 +19,7 @@ services:
     ports:
       - "443:443"
       - "80:80"
-      - "8080:8090"
+      - "8090:8080"
     volumes:
       #- "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json" 
       - "./config/letsencrypt:/config/letsencrypt"
