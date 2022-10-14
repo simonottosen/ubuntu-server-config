@@ -19,7 +19,7 @@ services:
     ports:
       - "443:443"
       - "80:80"
-      - "8090:8080"
+      - "8080:8090"
     volumes:
       #- "--certificatesresolvers.mytlschallenge.acme.storage=config/letsencrypt/acme.json" 
       - "./config/letsencrypt:/config/letsencrypt"
@@ -81,7 +81,17 @@ services:
       - "traefik.http.routers.omada.rule=Host(`omada.simonottosen.dk`)"
       - "traefik.http.routers.omada.entrypoints=websecure"
       - "traefik.http.routers.omada.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.omada.loadbalancer.server.port=8088"
+      - "traefik.enable=true"
+      - "traefik.http.routers.omada.service=omada-svc"
+      - "traefik.http.routers.omada.middlewares=omada-middlewares"
+      - "traefik.http.services.omada-svc.loadbalancer.server.scheme=https"
+      - "traefik.http.services.omada-svc.loadbalancer.server.port=8043"
+      - "traefik.http.services.omada-svc.loadbalancer.passhostheader=true"
+      - "traefik.http.middlewares.omada-middlewares.chain.middlewares=omada-redirect,omada-headers"
+      - "traefik.http.middlewares.omada-headers.headers.customrequestheaders.Host=omada.simonottosen.dk:8043"
+      - "traefik.http.middlewares.omada-headers.headers.customresponseheaders.Host=omada.simonottosen.dk"
+      - "traefik.http.middlewares.omada-redirect.redirectregex.regex=^https:\\/\\/([^\\/]+)\\/?$$"
+      - "traefik.http.middlewares.omada-redirect.redirectregex.replacement=https://$$1/login"
 
 
   unifi-controller:
