@@ -115,8 +115,8 @@ services:
       - "traefik.http.routers.unifi.rule=Host(`unifi.simonottosen.dk`)"
       - "traefik.http.routers.unifi.entrypoints=websecure"
       - "traefik.http.routers.unifi.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.unifi.serversTransport.insecureSkipVerify=true"
       - "traefik.http.services.unifi.loadbalancer.server.port=8443"
-
 
   hjem:
     image: tpanum/hjem
