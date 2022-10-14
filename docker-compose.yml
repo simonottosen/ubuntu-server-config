@@ -65,6 +65,50 @@ services:
         - "traefik.http.services.speedtest.loadbalancer.server.port=80"
 
 
+  omada-controller:
+    container_name: omada-controller
+    image: mbentley/omada-controller:5.5
+    restart: unless-stopped
+    environment:
+      - SHOW_SERVER_LOGS=true
+      - SHOW_MONGODB_LOGS=false
+      - TZ=Etc/UTC
+    volumes:
+      - config/omada-data:/opt/tplink/EAPController/data
+      - config/omada-logs:/opt/tplink/EAPController/logs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.omada.rule=Host(`omada.simonottosen.dk`)"
+      - "traefik.http.routers.omada.entrypoints=websecure"
+      - "traefik.http.routers.omada.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.omada.loadbalancer.server.port=8088"
+
+
+  unifi-controller:
+    image: lscr.io/linuxserver/unifi-controller:latest
+    container_name: unifi-controller
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - MEM_LIMIT=1024 
+      - MEM_STARTUP=1024 
+    volumes:
+      - config/unifi:/config
+    ports:
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 6789:6789
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.unifi.rule=Host(`unifi.simonottosen.dk`)"
+      - "traefik.http.routers.unifi.entrypoints=websecure"
+      - "traefik.http.routers.unifi.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.unifi.loadbalancer.server.port=8880"
+
+
   hjem:
     image: tpanum/hjem
     container_name: "houseprice"
