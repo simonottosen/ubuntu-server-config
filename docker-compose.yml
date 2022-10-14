@@ -77,7 +77,7 @@ services:
       - MANAGE_HTTP_PORT=8088
       - MANAGE_HTTPS_PORT=8043
       - PORTAL_HTTP_PORT=8088
-      - PORTAL_HTTPS_PORT=8844
+      - PORTAL_HTTPS_PORT=8843
       - PORT_APP_DISCOVERY=27001
       - PORT_ADOPT_V1=29812
       - PORT_UPGRADE_V1=29813
@@ -106,7 +106,7 @@ services:
       - 10001:10001/udp
       - 8080:8080
       - 1900:1900/udp #optional
-      - 8843:8843 #optional
+      #- 8843:8843 #optional
       - 8880:8880 #optional
       - 6789:6789 #optional
       - 5514:5514/udp #optional
