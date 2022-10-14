@@ -74,8 +74,8 @@ services:
       - SHOW_MONGODB_LOGS=false
       - TZ=Etc/UTC
     volumes:
-      - config/omada-data:/opt/tplink/EAPController/data
-      - config/omada-logs:/opt/tplink/EAPController/logs
+      - /config/omada-data:/opt/tplink/EAPController/data
+      - /config/omada-logs:/opt/tplink/EAPController/logs
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.omada.rule=Host(`omada.simonottosen.dk`)"
@@ -94,7 +94,7 @@ services:
       - MEM_LIMIT=1024 
       - MEM_STARTUP=1024 
     volumes:
-      - config/unifi:/config
+      - /config/unifi:/config
     ports:
       - 3478:3478/udp
       - 10001:10001/udp
