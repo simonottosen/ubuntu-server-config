@@ -77,7 +77,7 @@ services:
       - 29813:29813
       - 29811:29811
       - 29814:29814
-      - 29810:29810
+      - 29810:29810/udp
     environment:
       - SHOW_SERVER_LOGS=true
       - SHOW_MONGODB_LOGS=false
