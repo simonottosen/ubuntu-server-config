@@ -81,7 +81,6 @@ services:
       - "traefik.http.routers.omada.rule=Host(`omada.simonottosen.dk`)"
       - "traefik.http.routers.omada.entrypoints=websecure"
       - "traefik.http.routers.omada.tls.certresolver=mytlschallenge"
-      - "traefik.enable=true"
       - "traefik.http.routers.omada.service=omada-svc"
       - "traefik.http.routers.omada.middlewares=omada-middlewares"
       - "traefik.http.services.omada-svc.loadbalancer.server.scheme=https"
@@ -116,7 +115,7 @@ services:
       - "traefik.http.routers.unifi.rule=Host(`unifi.simonottosen.dk`)"
       - "traefik.http.routers.unifi.entrypoints=websecure"
       - "traefik.http.routers.unifi.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.unifi.loadbalancer.server.port=8880"
+      - "traefik.http.services.unifi.loadbalancer.server.port=8443"
 
 
   hjem:
