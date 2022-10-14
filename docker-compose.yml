@@ -112,12 +112,22 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
+      - "traefik.tags=frontend"
+      - "traefik.frontend.passHostHeader=true"
       - "traefik.http.routers.unifi.rule=Host(`unifi.simonottosen.dk`)"
       - "traefik.http.routers.unifi.entrypoints=websecure"
       - "traefik.http.routers.unifi.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.unifi.serversTransport.insecureSkipVerify=true"
       - "traefik.http.services.unifi.loadbalancer.server.port=8443"
-
+      - "traefik.frontend.headers.SSLRedirect=true"
+      - "traefik.frontend.headers.STSSeconds=315360000"
+      - "traefik.frontend.headers.browserXSSFilter=true"
+      - "traefik.frontend.headers.contentTypeNosniff=true"
+      - "traefik.frontend.headers.forceSTSHeader=true"
+      - "traefik.frontend.headers.SSLHost=example.com"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+      - "traefik.frontend.headers.frameDeny=true"
   hjem:
     image: tpanum/hjem
     container_name: "houseprice"
