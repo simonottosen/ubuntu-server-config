@@ -124,7 +124,7 @@ services:
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
 
   cph_postgres_db:
-    image: postgres
+    image: postgres:14
     container_name: "cph_postgres_db"
     environment: 
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
