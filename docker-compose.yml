@@ -319,7 +319,7 @@ services:
       - PGID=1000
       - VERSION=docker
     volumes:
-      - ./downloads:/config
+      - ./config/plex:/config
       - ./downloads:/downloads
     restart: unless-stopped
     labels:
