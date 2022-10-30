@@ -1,15 +1,4 @@
 version: "3.3"
-
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-
-networks:
-  monitor-net:
-    driver: bridge
-  services:
-    driver: bridge
-
 services:
 
   traefik:
@@ -36,9 +25,6 @@ services:
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
-    networks:
-      - monitor-net
-      - services
 
   jupyter:
     restart: always
@@ -57,8 +43,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
-    networks:
-      - services
 
   speedtest:
       container_name: speedtest
@@ -79,8 +63,6 @@ services:
         - "traefik.http.routers.speedtest.entrypoints=websecure"
         - "traefik.http.routers.speedtest.tls.certresolver=mytlschallenge"
         - "traefik.http.services.speedtest.loadbalancer.server.port=80"
-      networks:
-        - services
 
 
   omada-controller:
@@ -106,6 +88,7 @@ services:
       - /config/omada-data:/opt/tplink/EAPController/data
       - /config/omada-logs:/opt/tplink/EAPController/logs
 
+
   unifi-controller:
     image: lscr.io/linuxserver/unifi-controller:latest
     container_name: unifi-controller
@@ -128,8 +111,6 @@ services:
       - 6789:6789 #optional
       - 5514:5514/udp #optional
     restart: unless-stopped
-    networks:
-      - services
 
   hjem:
     image: tpanum/hjem
@@ -141,8 +122,6 @@ services:
       - "traefik.http.routers.hjem.entrypoints=websecure"
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
-    networks:
-      - services
 
   cph_postgres_db:
     image: postgres:14
@@ -157,8 +136,6 @@ services:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph-security/database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     restart: unless-stopped
-    networks:
-      - services
 
   cph_postgrest:
     image: postgrest/postgrest
@@ -181,8 +158,6 @@ services:
       - "traefik.http.routers.cphapi.entrypoints=websecure"
       - "traefik.http.routers.cphapi.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cphapi.loadbalancer.server.port=3000"
-    networks:
-      - services
 
   swagger-ui:
     container_name: cph_swagger-ui
@@ -198,8 +173,6 @@ services:
       - "traefik.http.routers.swagger.entrypoints=websecure"
       - "traefik.http.routers.swagger.tls.certresolver=mytlschallenge"
       - "traefik.http.services.swagger.loadbalancer.server.port=8080"
-    networks:
-      - services
 
   cph_fetchtime:
     image: "ghcr.io/simonottosen/cph-security_backend:main"
@@ -222,8 +195,6 @@ services:
       ofelia.enabled: "true"
       ofelia.job-exec.app.schedule: "@every 5m"
       ofelia.job-exec.app.command: "fetch"
-    networks:
-      - services
 
   ofelia:
     container_name: "cph_fetchtime_scheduler"
@@ -234,8 +205,6 @@ services:
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - services
 
 
   cph_frontend:
@@ -254,8 +223,6 @@ services:
       - "traefik.http.routers.cph.entrypoints=websecure"
       - "traefik.http.routers.cph.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
-    networks:
-      - services
 
 
   webserver:
@@ -269,8 +236,6 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
     restart: unless-stopped
-    networks:
-      - services
 
   devops:
     image: "nginx:alpine"
@@ -283,8 +248,6 @@ services:
       - "traefik.http.routers.devops.entrypoints=websecure"
       - "traefik.http.routers.devops.tls.certresolver=mytlschallenge"
     restart: unless-stopped
-    networks:
-      - services
 
   webhook:
     build:
@@ -312,8 +275,6 @@ services:
       - traefik.http.routers.webhook.rule=PathPrefix(`/webhook`)
       - traefik.http.routers.webhook.middlewares=webhook-stripprefix
       - traefik.http.middlewares.webhook-stripprefix.stripprefix.prefixes=/webhook
-    networks:
-      - services
 
   flood:
     image: jesec/flood
@@ -363,103 +324,3 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=false"
-
-
-  prometheus:
-    image: prom/prometheus:v2.38.0
-    container_name: prometheus
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    restart: unless-stopped
-    ports:
-      - 9090:9090
-    labels:
-      org.label-schema.group: "monitoring"
-    networks:
-      - monitor-net
-
-  alertmanager:
-    image: prom/alertmanager:v0.24.0
-    container_name: alertmanager
-    volumes:
-      - ./alertmanager:/etc/alertmanager
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-    restart: unless-stopped
-    ports:
-      - 9093:9093
-    labels:
-      org.label-schema.group: "monitoring"
-    networks:
-      - monitor-net
-
-  nodeexporter:
-    image: prom/node-exporter:v1.3.1
-    container_name: nodeexporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
-    ports:
-      - 9100:9100
-    labels:
-      org.label-schema.group: "monitoring"
-    networks:
-      - monitor-net
-
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.45.0
-    container_name: cadvisor
-    privileged: true
-    devices:
-      - /dev/kmsg:/dev/kmsg
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-      - /cgroup:/cgroup:ro
-    restart: unless-stopped
-    ports:
-      - 8081:8080
-    labels:
-      org.label-schema.group: "monitoring"
-    networks:
-      - monitor-net
-
-  grafana:
-    image: grafana/grafana:9.1.1
-    container_name: grafana
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-    environment:
-      - GF_SECURITY_ADMIN_USER=${USERNAME}
-      - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD}
-      - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
-    labels:
-      - "org.label-schema.group:monitoring"
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.simonottosen.dk`)"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.routers.grafana.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-    networks:
-      - monitor-net
