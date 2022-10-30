@@ -334,8 +334,6 @@ services:
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
       - "traefik.http.services.torrent.loadbalancer.server.port=3001"
-    networks:
-      - services
       
   rtorrent:
     image: jesec/rtorrent
@@ -350,8 +348,6 @@ services:
       - ./downloads:/data
     ports:
       - 6881:6881
-    networks:
-      - services
 
   plex:
     image: lscr.io/linuxserver/plex:latest
