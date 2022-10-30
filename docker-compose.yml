@@ -4,6 +4,11 @@ volumes:
     prometheus_data: {}
     grafana_data: {}
 
+networks:
+  monitor-net:
+    driver: bridge
+  services:
+    driver: bridge
 
 services:
 
@@ -31,6 +36,9 @@ services:
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
+    networks:
+      - monitor-net
+      - services
 
   jupyter:
     restart: always
@@ -49,6 +57,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
+    networks:
+      - services
 
   speedtest:
       container_name: speedtest
@@ -69,6 +79,8 @@ services:
         - "traefik.http.routers.speedtest.entrypoints=websecure"
         - "traefik.http.routers.speedtest.tls.certresolver=mytlschallenge"
         - "traefik.http.services.speedtest.loadbalancer.server.port=80"
+    networks:
+      - services
 
 
   omada-controller:
@@ -93,6 +105,8 @@ services:
     volumes:
       - /config/omada-data:/opt/tplink/EAPController/data
       - /config/omada-logs:/opt/tplink/EAPController/logs
+    networks:
+      - services
 
 
   unifi-controller:
@@ -117,6 +131,8 @@ services:
       - 6789:6789 #optional
       - 5514:5514/udp #optional
     restart: unless-stopped
+    networks:
+      - services
 
   hjem:
     image: tpanum/hjem
@@ -128,6 +144,8 @@ services:
       - "traefik.http.routers.hjem.entrypoints=websecure"
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
+    networks:
+      - services
 
   cph_postgres_db:
     image: postgres:14
@@ -142,6 +160,8 @@ services:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph-security/database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     restart: unless-stopped
+    networks:
+      - services
 
   cph_postgrest:
     image: postgrest/postgrest
@@ -164,6 +184,8 @@ services:
       - "traefik.http.routers.cphapi.entrypoints=websecure"
       - "traefik.http.routers.cphapi.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cphapi.loadbalancer.server.port=3000"
+    networks:
+      - services
 
   swagger-ui:
     container_name: cph_swagger-ui
@@ -179,6 +201,8 @@ services:
       - "traefik.http.routers.swagger.entrypoints=websecure"
       - "traefik.http.routers.swagger.tls.certresolver=mytlschallenge"
       - "traefik.http.services.swagger.loadbalancer.server.port=8080"
+    networks:
+      - services
 
   cph_fetchtime:
     image: "ghcr.io/simonottosen/cph-security_backend:main"
@@ -201,6 +225,8 @@ services:
       ofelia.enabled: "true"
       ofelia.job-exec.app.schedule: "@every 5m"
       ofelia.job-exec.app.command: "fetch"
+    networks:
+      - services
 
   ofelia:
     container_name: "cph_fetchtime_scheduler"
@@ -211,6 +237,8 @@ services:
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - services
 
 
   cph_frontend:
@@ -229,6 +257,8 @@ services:
       - "traefik.http.routers.cph.entrypoints=websecure"
       - "traefik.http.routers.cph.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
+    networks:
+      - services
 
 
   webserver:
@@ -242,6 +272,8 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
     restart: unless-stopped
+    networks:
+      - services
 
   devops:
     image: "nginx:alpine"
@@ -254,6 +286,8 @@ services:
       - "traefik.http.routers.devops.entrypoints=websecure"
       - "traefik.http.routers.devops.tls.certresolver=mytlschallenge"
     restart: unless-stopped
+    networks:
+      - services
 
   webhook:
     build:
@@ -281,6 +315,8 @@ services:
       - traefik.http.routers.webhook.rule=PathPrefix(`/webhook`)
       - traefik.http.routers.webhook.middlewares=webhook-stripprefix
       - traefik.http.middlewares.webhook-stripprefix.stripprefix.prefixes=/webhook
+    networks:
+      - services
 
   flood:
     image: jesec/flood
@@ -301,6 +337,8 @@ services:
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
       - "traefik.http.services.torrent.loadbalancer.server.port=3001"
+    networks:
+      - services
       
   rtorrent:
     image: jesec/rtorrent
@@ -315,6 +353,8 @@ services:
       - ./downloads:/data
     ports:
       - 6881:6881
+    networks:
+      - services
 
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -330,6 +370,8 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=false"
+    networks:
+      - services
 
 
   prometheus:
@@ -347,9 +389,11 @@ services:
       - '--web.enable-lifecycle'
     restart: unless-stopped
     ports:
-      - 9095:9090
+      - 9090:9090
     labels:
       org.label-schema.group: "monitoring"
+    networks:
+      - monitor-net
 
   alertmanager:
     image: prom/alertmanager:v0.24.0
@@ -364,6 +408,8 @@ services:
       - 9093:9093
     labels:
       org.label-schema.group: "monitoring"
+    networks:
+      - monitor-net
 
   nodeexporter:
     image: prom/node-exporter:v1.3.1
@@ -382,6 +428,8 @@ services:
       - 9100:9100
     labels:
       org.label-schema.group: "monitoring"
+    networks:
+      - monitor-net
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0
@@ -400,6 +448,8 @@ services:
       - 8081:8080
     labels:
       org.label-schema.group: "monitoring"
+    networks:
+      - monitor-net
 
   grafana:
     image: grafana/grafana:9.1.1
@@ -420,3 +470,5 @@ services:
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.tls.certresolver=mytlschallenge"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    networks:
+      - monitor-net

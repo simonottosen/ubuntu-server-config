@@ -75,7 +75,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(time() - process_start_time_seconds{instance=\"localhost:9095\",job=\"prometheus\"})",
+          "expr": "(time() - process_start_time_seconds{instance=\"localhost:9090\",job=\"prometheus\"})",
           "interval": "10s",
           "intervalFactor": 1,
           "legendFormat": "",
