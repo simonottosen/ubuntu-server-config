@@ -105,9 +105,6 @@ services:
     volumes:
       - /config/omada-data:/opt/tplink/EAPController/data
       - /config/omada-logs:/opt/tplink/EAPController/logs
-    networks:
-      - services
-
 
   unifi-controller:
     image: lscr.io/linuxserver/unifi-controller:latest
@@ -370,8 +367,6 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=false"
-    networks:
-      - services
 
 
   prometheus:
