@@ -187,6 +187,7 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
       CPHAPI_HOST: ${CPHAPI_HOST}
+      HEALTHCHECK: ${HEALTHCHECK}
       GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
     restart: unless-stopped
     volumes:
