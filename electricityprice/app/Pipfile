@@ -12,6 +12,7 @@ pandas = "*"
 pytz = "*"
 matplotlib = "*"
 dash_bootstrap_components = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.10"

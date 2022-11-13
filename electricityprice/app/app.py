@@ -9,8 +9,11 @@ from datetime import timedelta, datetime
 import pytz
 import matplotlib.pyplot as plt
 import dash_bootstrap_components as dbc
+import os
 
+debug = False if os.environ["DASH_DEBUG_MODE"] == "False" else True
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 app.title = "Electricity-price"
 
 data = urllib.request.urlopen("https://api.energidataservice.dk/dataset/Elspotprices?limit=48&filter={\"PriceArea\":\"DK2\"}").read()
@@ -181,6 +184,5 @@ app.layout = html.Div(style={'backgroundColor': colors['background'], 'height':'
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
-
+    app.run(host="0.0.0.0", port="8050", debug=debug)
 
