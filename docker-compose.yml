@@ -226,6 +226,19 @@ services:
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
 
 
+  electricityprice:
+    build:
+      context: ./electricityprice
+      dockerfile: Dockerfile
+    container_name: electricityprice
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.electricityprice.rule=Host(`electricity.simonottosen.dk`)"
+      - "traefik.http.routers.electricityprice.entrypoints=websecure"
+      - "traefik.http.routers.electricityprice.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.electricityprice.loadbalancer.server.port=8050"
+    restart: unless-stopped
+
   webserver:
     image: "nginx:alpine"
     container_name: "webserver"
@@ -237,6 +250,7 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
     restart: unless-stopped
+
 
   devops:
     image: "nginx:alpine"
