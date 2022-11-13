@@ -237,6 +237,10 @@ services:
       - "traefik.http.routers.electricityprice.entrypoints=websecure"
       - "traefik.http.routers.electricityprice.tls.certresolver=mytlschallenge"
       - "traefik.http.services.electricityprice.loadbalancer.server.port=8050"
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.app.schedule=@hourly"
+      - "ofelia.job-exec.app.command=pkill gunicorn"
+
     restart: unless-stopped
 
   webserver:
