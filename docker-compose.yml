@@ -44,8 +44,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
       
-      
-   cbs_jupyter:
+  cbs_jupyter:
     restart: always
     image: jupyter/scipy-notebook
     container_name: "cbs_jupyter"
