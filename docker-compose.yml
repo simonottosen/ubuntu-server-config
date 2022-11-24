@@ -43,6 +43,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
+      
+      
+   jupyter:
+    restart: always
+    image: tensorflow/tensorflow:latest-jupyter
+    container_name: "jupyter"
+    volumes:
+      - ./cbs:/tf
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cbs.rule=Host(`cbs.simonottosen.dk`)"
+      - "traefik.http.routers.cbs.entrypoints=websecure"
+      - "traefik.http.routers.cbs.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.cbs.loadbalancer.server.port=8888"
+
 
   speedtest:
       container_name: speedtest
