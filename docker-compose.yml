@@ -28,10 +28,10 @@ services:
 
   jupyter:
     restart: always
-    image: tensorflow/tensorflow:latest-jupyter
+    image: jupyter/scipy-notebook
     container_name: "jupyter"
     volumes:
-      - ./jupyter:/tf
+      - ./jupyter:/home/jovyan/
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jupyter.rule=Host(`jupyter.simonottosen.dk`)"
@@ -45,19 +45,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       
       
-   jupyter:
+   cbs_jupyter:
     restart: always
-    image: tensorflow/tensorflow:latest-jupyter
-    container_name: "jupyter"
+    image: jupyter/scipy-notebook
+    container_name: "cbs_jupyter"
     volumes:
-      - ./cbs:/tf
+      - ./cbs:/home/jovyan/
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.cbs.rule=Host(`cbs.simonottosen.dk`)"
       - "traefik.http.routers.cbs.entrypoints=websecure"
       - "traefik.http.routers.cbs.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cbs.loadbalancer.server.port=8888"
-
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    command: "start-notebook.sh --NotebookApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$JNan+x+TfTKTlj3I4MajSQ$00b8JxMGee7vKrrqlOLo+oB1cX8+QwMnHIqqTlkUhXM'"
 
   speedtest:
       container_name: speedtest
