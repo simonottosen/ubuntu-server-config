@@ -56,8 +56,6 @@ services:
       - "traefik.http.routers.cbs.entrypoints=websecure"
       - "traefik.http.routers.cbs.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cbs.loadbalancer.server.port=8888"
-    environment:
-      JUPYTER_ENABLE_LAB: "yes"
 
   speedtest:
       container_name: speedtest
