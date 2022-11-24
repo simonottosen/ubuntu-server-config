@@ -59,7 +59,7 @@ services:
       - "traefik.http.services.cbs.loadbalancer.server.port=8888"
     environment:
       JUPYTER_ENABLE_LAB: "yes"
-    command: "start-notebook.sh --NotebookApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$JNan+x+TfTKTlj3I4MajSQ$00b8JxMGee7vKrrqlOLo+oB1cX8+QwMnHIqqTlkUhXM'"
+    command: "start-notebook.sh --NotebookApp.password='${CBS_PASSWORD}'"
 
   speedtest:
       container_name: speedtest
