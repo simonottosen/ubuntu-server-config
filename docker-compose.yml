@@ -206,9 +206,9 @@ services:
     volumes:
       - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
     labels:
-      ofelia.enabled: "true"
-      ofelia.job-exec.app.schedule: "@every 5m"
-      ofelia.job-exec.app.command: "fetch"
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.app.schedule=@every 5m"
+      - "ofelia.job-exec.app.command=fetch"
 
   ofelia:
     container_name: "cph_fetchtime_scheduler"
