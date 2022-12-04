@@ -198,7 +198,7 @@ services:
       - "ofelia.job-exec.app.command=fetch"
 
   ofelia:
-    container_name: "cph_fetchtime_scheduler"
+    container_name: "ofelia_scheduler"
     image: mcuadros/ofelia:latest
     restart: always
     depends_on:
@@ -226,22 +226,21 @@ services:
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
 
 
-  electricityprice:
-    build:
-      context: ./electricityprice
-      dockerfile: Dockerfile
-    container_name: electricityprice
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.electricityprice.rule=Host(`electricity.simonottosen.dk`)"
-      - "traefik.http.routers.electricityprice.entrypoints=websecure"
-      - "traefik.http.routers.electricityprice.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.electricityprice.loadbalancer.server.port=8050"
-      - "ofelia.enabled=true"
-      - "ofelia.job-exec.app.schedule=@hourly"
-      - "ofelia.job-exec.app.command=pkill gunicorn"
-
-    restart: unless-stopped
+#  electricityprice:
+#    build:
+#      context: ./electricityprice
+#      dockerfile: Dockerfile
+#    container_name: electricityprice
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.electricityprice.rule=Host(`electricity.simonottosen.dk`)"
+#      - "traefik.http.routers.electricityprice.entrypoints=websecure"
+#      - "traefik.http.routers.electricityprice.tls.certresolver=mytlschallenge"
+#      - "traefik.http.services.electricityprice.loadbalancer.server.port=8050"
+#      - "ofelia.enabled=true"
+#      - "ofelia.job-exec.app.schedule=@hourly"
+#      - "ofelia.job-exec.app.command=pkill gunicorn"
+#    restart: unless-stopped
 
   webserver:
     image: "nginx:alpine"
