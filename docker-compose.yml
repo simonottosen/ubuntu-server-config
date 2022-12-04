@@ -44,19 +44,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
       
-  cbs_jupyter:
-    restart: always
-    image: jupyter/scipy-notebook
-    container_name: "cbs_jupyter"
-    volumes:
-      - ./cbs:/home/jovyan/
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.cbs.rule=Host(`cbs.simonottosen.dk`)"
-      - "traefik.http.routers.cbs.entrypoints=websecure"
-      - "traefik.http.routers.cbs.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.cbs.loadbalancer.server.port=8888"
-
   speedtest:
       container_name: speedtest
       image: henrywhitaker3/speedtest-tracker
