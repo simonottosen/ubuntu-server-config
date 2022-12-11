@@ -47,24 +47,24 @@ services:
       - FIREWALL_VPN_INPUT_PORTS=55183
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.simonottosen.dk`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.whoami.loadbalancer.server.port=80"
-   
+      - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
+      - "traefik.http.routers.torrent.entrypoints=websecure"
+      - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.torrent.loadbalancer.server.port=3001"
+    #network_mode: "container:gluetun"
+
       
   webserver:
     image: "nginx:alpine"
     container_name: "webserver"
     volumes:
       - ./webserver:/usr/share/nginx/html
-    #labels:
-    #  - "traefik.enable=true"
-    #  - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
-    #  - "traefik.http.routers.webserver.entrypoints=websecure"
-    #  - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
     restart: unless-stopped
-    network_mode: "container:gluetun"
 
     
     
@@ -347,14 +347,16 @@ services:
     volumes:
       - ./config/rtorrent:/config
       - ./downloads:/data
-    ports:
-      - 3001:3001
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
-      - "traefik.http.routers.torrent.entrypoints=websecure"
-      - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.torrent.loadbalancer.server.port=3001"
+    #ports:
+    #  - 3001:3001
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
+    #  - "traefik.http.routers.torrent.entrypoints=websecure"
+    #  - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
+    #  - "traefik.http.services.torrent.loadbalancer.server.port=3001"
+    network_mode: "container:gluetun"
+
       
   rtorrent:
     image: jesec/rtorrent
@@ -369,6 +371,8 @@ services:
       - ./downloads:/data
     ports:
       - 6881:6881
+    network_mode: "container:gluetun"
+
 
   plex:
     image: lscr.io/linuxserver/plex:latest
