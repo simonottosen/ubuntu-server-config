@@ -45,6 +45,20 @@ services:
       - WIREGUARD_ADDRESSES=10.65.81.143/32
       - SERVER_CITIES=Copenhagen
       - FIREWALL_VPN_INPUT_PORTS=55183
+      
+      
+  webserver:
+    image: "nginx:alpine"
+    container_name: "webserver"
+    volumes:
+      - ./webserver:/usr/share/nginx/html
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.whoami.rule=Host(`simonottosen.dk`)"
+    #  - "traefik.http.routers.whoami.entrypoints=websecure"
+    #  - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+    restart: unless-stopped
+    network_mode: "container:gluetun"
 
   jupyter:
     restart: always
@@ -262,17 +276,6 @@ services:
 #      - "ofelia.job-exec.app.command=pkill gunicorn"
 #    restart: unless-stopped
 
-  webserver:
-    image: "nginx:alpine"
-    container_name: "webserver"
-    volumes:
-      - ./webserver:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`simonottosen.dk`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
-    restart: unless-stopped
 
   caseprepp:
     image: "nginx:alpine"
