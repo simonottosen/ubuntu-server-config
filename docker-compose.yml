@@ -52,6 +52,7 @@ services:
       - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
       - "traefik.http.services.torrent.loadbalancer.server.port=3001"
     #network_mode: "container:gluetun"
+    restart: unless-stopped
 
       
   webserver:
