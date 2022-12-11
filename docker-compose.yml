@@ -369,8 +369,8 @@ services:
     volumes:
       - ./config/rtorrent:/config
       - ./downloads:/data
-    ports:
-      - 6881:6881
+    #ports:
+    #  - 6881:6881
     network_mode: "container:gluetun"
 
 
