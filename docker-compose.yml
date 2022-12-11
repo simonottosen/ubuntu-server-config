@@ -39,7 +39,7 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
-      - 6881:6881
+      - 55183:55183
     environment:
       - VPN_SERVICE_PROVIDER=mullvad
       - VPN_TYPE=wireguard
@@ -366,14 +366,14 @@ services:
     container_name: "rtorrent"
     user: 1000:1000
     restart: unless-stopped
-    command: -o network.port_range.set=6881-6881,system.daemon.set=true
+    command: -o network.port_range.set=55183-55183,system.daemon.set=true
     environment:
       HOME: /config
     volumes:
       - ./config/rtorrent:/config
       - ./downloads:/data
     #ports:
-    #  - 6881:6881
+    #  - 55183:55183
     network_mode: "container:gluetun"
 
 
