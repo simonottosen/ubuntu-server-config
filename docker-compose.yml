@@ -50,7 +50,7 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`whoami.simonottosen.dk`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.whoami.loadbalancer.server.port=2001"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
    
       
   webserver:
@@ -58,22 +58,15 @@ services:
     container_name: "webserver"
     volumes:
       - ./webserver:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
-      - "traefik.http.routers.webserver.entrypoints=websecure"
-      - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
+    #  - "traefik.http.routers.webserver.entrypoints=websecure"
+    #  - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
     restart: unless-stopped
-    
-    
-  whoami:
-    image: traefik/whoami
-    container_name: "whoami"
-    command:
-       - --port=2001
-       - --name=iamfoo
     network_mode: "container:gluetun"
-    restart: unless-stopped
+
+    
     
   jupyter:
     restart: always
