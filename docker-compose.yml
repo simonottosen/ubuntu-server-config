@@ -50,7 +50,7 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`whoami.simonottosen.dk`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.jupyter.loadbalancer.server.port=2001"
+      - "traefik.http.services.whoami.loadbalancer.server.port=2001"
    
       
   webserver:
@@ -60,9 +60,9 @@ services:
       - ./webserver:/usr/share/nginx/html
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`simonottosen.dk`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
+      - "traefik.http.routers.webserver.entrypoints=websecure"
+      - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
     restart: unless-stopped
     
     
