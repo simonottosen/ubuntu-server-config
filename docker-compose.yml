@@ -73,7 +73,8 @@ services:
        - --port=2001
        - --name=iamfoo
     network_mode: "container:gluetun"
-
+    restart: unless-stopped
+    
   jupyter:
     restart: always
     image: jupyter/scipy-notebook
