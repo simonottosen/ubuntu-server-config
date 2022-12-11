@@ -38,6 +38,8 @@ services:
       test: wget -O - https://am.i.mullvad.net/connected | grep -q "You are connected"
     cap_add:
       - NET_ADMIN
+    ports:
+      - 6881:6881
     environment:
       - VPN_SERVICE_PROVIDER=mullvad
       - VPN_TYPE=wireguard
