@@ -31,7 +31,7 @@ services:
     image: qmcgaw/gluetun
     container_name: "gluetun"
     devices:
-      - /dev/net/tun
+      - /dev/net/tun:/dev/net/tun
     labels:
       - autoheal=true
     healthcheck:
