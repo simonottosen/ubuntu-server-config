@@ -68,6 +68,7 @@ services:
     
   whoami:
     image: traefik/whoami
+    container_name: "gluetun"
     command:
        - --port=2001
        - --name=iamfoo
