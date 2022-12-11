@@ -44,8 +44,7 @@ services:
       - WIREGUARD_PRIVATE_KEY=${PRIVATEKEY_MULLVAD}
       - WIREGUARD_ADDRESSES=10.65.81.143/32
       - SERVER_CITIES=Copenhagen
-#      - FIREWALL_VPN_INPUT_PORTS=55183
-      - DOT=off
+      - FIREWALL_VPN_INPUT_PORTS=55183
 
   jupyter:
     restart: always
