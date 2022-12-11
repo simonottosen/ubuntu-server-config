@@ -25,6 +25,24 @@ services:
       - "./config/letsencrypt:/config/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
+    
+    
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: "gluetun"
+    labels:
+      - autoheal=true
+    healthcheck:
+      test: wget -O - https://am.i.mullvad.net/connected | grep -q "You are connected"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${PRIVATEKEY_MULLVAD}
+      - WIREGUARD_ADDRESSES=10.65.81.143/32
+      - SERVER_CITIES=Copenhagen
+      - FIREWALL_VPN_INPUT_PORTS=55183
 
   jupyter:
     restart: always
