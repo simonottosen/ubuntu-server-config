@@ -34,8 +34,6 @@ services:
       - /dev/net/tun:/dev/net/tun
     labels:
       - autoheal=true
-    healthcheck:
-      test: wget -O - https://am.i.mullvad.net/connected | grep -q "You are connected"
     cap_add:
       - NET_ADMIN
     ports:
