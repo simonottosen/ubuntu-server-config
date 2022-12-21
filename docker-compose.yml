@@ -311,9 +311,7 @@ services:
     restart: unless-stopped
 
   webhook:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./webhook/
     container_name: webhook
     restart: unless-stopped
     user: 1000:1000
@@ -323,10 +321,10 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./hooks/:/etc/webhook
-      - ./scripts/:/scripts/
+      - ./webhook/hooks/:/etc/webhook
+      - ./webhook/scripts/:/scripts/
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./pipe:/hostpipe
+      - ./webhook/pipe:/hostpipe
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.webhook.rule=Host(`webhook.simonottosen.dk`)"
