@@ -67,6 +67,17 @@ services:
       - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
     restart: unless-stopped
 
+  filippa:
+    image: "nginx:alpine"
+    container_name: "filippa"
+    volumes:
+      - ./filippa:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.filippa.rule=Host(`filippa.simonottosen.dk`)"
+      - "traefik.http.routers.filippa.entrypoints=websecure"
+      - "traefik.http.routers.filippa.tls.certresolver=mytlschallenge"
+    restart: unless-stopped
     
     
   jupyter:
