@@ -424,5 +424,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  pihole_etc:
+  pihole:
     name: pihole
