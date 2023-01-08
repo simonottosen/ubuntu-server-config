@@ -417,7 +417,7 @@ services:
       - "VIRTUAL_HOST=pihole.servermat"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole.servermat`, `pihole`)"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.simonottosen.dk`, `pihole`)"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
     volumes:
       - pihole:/etc/pihole
