@@ -61,8 +61,8 @@ services:
     volumes:
       - ./webserver:/usr/share/nginx/html
     restart: unless-stopped
-    ports:
-      - 80:80
+    #ports:
+    #  - 80:80
     networks:
       - cloudflared
 
