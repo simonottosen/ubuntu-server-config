@@ -60,12 +60,10 @@ services:
     container_name: "webserver"
     volumes:
       - ./webserver:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.webserver.rule=Host(`simonottosen.dk`)"
-      - "traefik.http.routers.webserver.entrypoints=websecure"
-      - "traefik.http.routers.webserver.tls.certresolver=mytlschallenge"
     restart: unless-stopped
+    ports:
+      - 80:80
+    network: cloudflared
 
   filippa:
     image: "nginx:alpine"
