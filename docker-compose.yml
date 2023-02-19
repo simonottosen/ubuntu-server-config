@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
-    network: cloudflared
+    networks: cloudflared
 
   filippa:
     image: "nginx:alpine"
