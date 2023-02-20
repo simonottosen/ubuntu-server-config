@@ -278,7 +278,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   cph_frontend:
-    image: "ghcr.io/simonottosen/security_frontend@sha256:cf5b739710dde060bbadb9c8a96a25fc26f9d70d82aba4944ad51c1e3fa442ea"
+    image: "ghcr.io/simonottosen/security_frontend:main"
     container_name: "cph_frontend"
     volumes:
       - ./cph-security/frontend/:/frontend/project
