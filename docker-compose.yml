@@ -77,7 +77,9 @@ services:
       - "traefik.http.routers.filippa.entrypoints=websecure"
       - "traefik.http.routers.filippa.tls.certresolver=mytlschallenge"
     restart: unless-stopped
-    
+    networks:
+      - cloudflared
+
     
   jupyter:
     restart: always
@@ -96,7 +98,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
-      
+    networks:
+      - cloudflared
+
   speedtest:
       container_name: speedtest
       image: henrywhitaker3/speedtest-tracker
@@ -116,7 +120,8 @@ services:
         - "traefik.http.routers.speedtest.entrypoints=websecure"
         - "traefik.http.routers.speedtest.tls.certresolver=mytlschallenge"
         - "traefik.http.services.speedtest.loadbalancer.server.port=80"
-
+    networks:
+      - cloudflared
 
 ##  omada-controller:
 ##    container_name: omada-controller
@@ -175,6 +180,8 @@ services:
       - "traefik.http.routers.hjem.entrypoints=websecure"
       - "traefik.http.routers.hjem.tls.certresolver=mytlschallenge"
       - "traefik.http.services.hjem.loadbalancer.server.port=8080"
+    networks:
+      - cloudflared
 
   cph_postgres_db:
     image: postgres:14
@@ -211,6 +218,10 @@ services:
       - "traefik.http.routers.cphapi.entrypoints=websecure"
       - "traefik.http.routers.cphapi.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cphapi.loadbalancer.server.port=3000"
+    networks:
+      - cloudflared
+
+
 
   swagger-ui:
     container_name: cph_swagger-ui
@@ -226,6 +237,8 @@ services:
       - "traefik.http.routers.swagger.entrypoints=websecure"
       - "traefik.http.routers.swagger.tls.certresolver=mytlschallenge"
       - "traefik.http.services.swagger.loadbalancer.server.port=8080"
+    networks:
+      - cloudflared
 
   cph_fetchtime:
     image: "ghcr.io/simonottosen/cph-security_backend:main"
@@ -277,6 +290,8 @@ services:
       - "traefik.http.routers.cph.entrypoints=websecure"
       - "traefik.http.routers.cph.tls.certresolver=mytlschallenge"
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
+    networks:
+      - cloudflared
 
 
 #  electricityprice:
