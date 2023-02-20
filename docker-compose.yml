@@ -196,6 +196,8 @@ services:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph-security/database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     restart: unless-stopped
+    networks:
+      - cloudflared
 
   cph_postgrest:
     image: postgrest/postgrest
@@ -262,6 +264,8 @@ services:
       - "ofelia.enabled=true"
       - "ofelia.job-exec.app.schedule=@every 5m"
       - "ofelia.job-exec.app.command=fetch"
+    networks:
+      - cloudflared
 
   ofelia:
     container_name: "ofelia_scheduler"
