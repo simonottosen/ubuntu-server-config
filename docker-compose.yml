@@ -32,8 +32,6 @@ services:
     container_name: "gluetun"
     devices:
       - /dev/net/tun:/dev/net/tun
-    labels:
-      - autoheal=true
     cap_add:
       - NET_ADMIN
     ports:
@@ -46,13 +44,15 @@ services:
       - SERVER_CITIES=Copenhagen
       - FIREWALL_VPN_INPUT_PORTS=55183
     labels:
+      - "autoheal=true"
       - "traefik.enable=true"
       - "traefik.http.routers.torrent.rule=Host(`torrent.simonottosen.dk`)"
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.routers.torrent.tls.certresolver=mytlschallenge"
       - "traefik.http.services.torrent.loadbalancer.server.port=3001"
-    #network_mode: "container:gluetun"
     restart: unless-stopped
+    networks:
+      - cloudflared
 
       
   webserver:
@@ -292,48 +292,6 @@ services:
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
     networks:
       - cloudflared
-
-
-#  electricityprice:
-#    build:
-#      context: ./electricityprice
-#      dockerfile: Dockerfile
-#    container_name: electricityprice
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.electricityprice.rule=Host(`electricity.simonottosen.dk`)"
-#      - "traefik.http.routers.electricityprice.entrypoints=websecure"
-#      - "traefik.http.routers.electricityprice.tls.certresolver=mytlschallenge"
-#      - "traefik.http.services.electricityprice.loadbalancer.server.port=8050"
-#      - "ofelia.enabled=true"
-#      - "ofelia.job-exec.app.schedule=@hourly"
-#      - "ofelia.job-exec.app.command=pkill gunicorn"
-#    restart: unless-stopped
-
-
-  caseprepp:
-    image: "nginx:alpine"
-    container_name: "caseprep"
-    volumes:
-      - ./caseprep:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.caseprep.rule=Host(`caseprep.simonottosen.dk`)"
-      - "traefik.http.routers.caseprep.entrypoints=websecure"
-      - "traefik.http.routers.caseprep.tls.certresolver=mytlschallenge"
-    restart: unless-stopped
-
-  devops:
-    image: "nginx:alpine"
-    container_name: "devops"
-    volumes:
-      - ./devops:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.devops.rule=Host(`devops.simonottosen.dk`)"
-      - "traefik.http.routers.devops.entrypoints=websecure"
-      - "traefik.http.routers.devops.tls.certresolver=mytlschallenge"
-    restart: unless-stopped
 
   webhook:
     build: ./webhook/
