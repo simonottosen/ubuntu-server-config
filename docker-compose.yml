@@ -274,7 +274,6 @@ services:
     user: user
     depends_on:
       - cph_postgres_db
-      - selenium_firefox
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -294,13 +293,28 @@ services:
     networks:
       - cloudflared
 
-  selenium_firefox:
-    container_name: "selenium_firefox"
-    image: selenium/standalone-firefox:4.8.1-20230306
-    shm_size: 2gb
-    ports:
-      - "7900:7900"
-      - "4444:4444"
+  osl_fetchtime:
+    image: "ghcr.io/simonottosen/cph-security_oslo:main"
+    container_name: "osl_fetchtime"
+    user: user
+    depends_on:
+      - cph_postgres_db
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      CPHAPI_HOST: ${CPHAPI_HOST}
+      ARN_HEALTHCHECK: ${ARN_HEALTHCHECK}
+      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
+    restart: unless-stopped
+    volumes:
+      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
+    labels:
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.osl.schedule=@every 5m"
+      - "ofelia.job-exec.osl.command=fetch"
     networks:
       - cloudflared
 
@@ -312,6 +326,7 @@ services:
     depends_on:
       - cph_fetchtime
       - arn_fetchtime
+      - osl_fetchtime
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
