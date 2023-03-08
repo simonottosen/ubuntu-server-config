@@ -306,7 +306,7 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
       CPHAPI_HOST: ${CPHAPI_HOST}
-      ARN_HEALTHCHECK: ${ARN_HEALTHCHECK}
+      OSL_HEALTHCHECK: ${OSL_HEALTHCHECK}
       GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
     restart: unless-stopped
     volumes:
