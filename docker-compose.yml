@@ -262,8 +262,8 @@ services:
       - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
     labels:
       - "ofelia.enabled=true"
-      - "ofelia.job-exec.app.schedule=@every 5m"
-      - "ofelia.job-exec.app.command=fetch"
+      - "ofelia.job-exec.cph.schedule=@every 5m"
+      - "ofelia.job-exec.cph.command=fetch"
     networks:
       - cloudflared
 
@@ -289,8 +289,8 @@ services:
       - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
     labels:
       - "ofelia.enabled=true"
-      - "ofelia.job-exec.app.schedule=@every 5m"
-      - "ofelia.job-exec.app.command=fetch"
+      - "ofelia.job-exec.arn.schedule=@every 5m"
+      - "ofelia.job-exec.arn.command=fetch"
     networks:
       - cloudflared
 
@@ -311,6 +311,7 @@ services:
     restart: always
     depends_on:
       - cph_fetchtime
+      - arn_fetchtime
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
