@@ -292,6 +292,28 @@ services:
       - "ofelia.job-exec.arn.command=fetch"
     networks:
       - cloudflared
+      
+  universal_fetchtime:
+    image: "ghcr.io/simonottosen/cph-security_fetchtime:main"
+    container_name: "universal_fetchtime"
+    user: user
+    depends_on:
+      - cph_postgres_db
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      CPHAPI_HOST: ${CPHAPI_HOST}
+      ARN_HEALTHCHECK: ${FRA_HEALTHCHECK}
+      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
+    restart: unless-stopped
+    volumes:
+      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
+    networks:
+      - cloudflared
+
 
   osl_fetchtime:
     image: "ghcr.io/simonottosen/cph-security_oslo:main"
