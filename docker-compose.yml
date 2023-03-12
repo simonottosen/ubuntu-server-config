@@ -223,8 +223,6 @@ services:
     networks:
       - cloudflared
 
-
-
   swagger-ui:
     container_name: cph_swagger-ui
     image: swaggerapi/swagger-ui:latest
@@ -242,57 +240,6 @@ services:
     networks:
       - cloudflared
 
-  cph_fetchtime:
-    image: "ghcr.io/simonottosen/cph-security_backend:main"
-    container_name: "cph_fetchtime"
-    user: user
-    depends_on:
-      - cph_postgres_db
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      CPHAPI_HOST: ${CPHAPI_HOST}
-      HEALTHCHECK: ${HEALTHCHECK}
-      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
-    restart: unless-stopped
-    volumes:
-      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
-    labels:
-      - "ofelia.enabled=true"
-      - "ofelia.job-exec.cph.schedule=@every 5m"
-      - "ofelia.job-exec.cph.command=fetch"
-    networks:
-      - cloudflared
-
-
-  arn_fetchtime:
-    image: "ghcr.io/simonottosen/cph-security_stockholm:main"
-    container_name: "arn_fetchtime"
-    user: user
-    depends_on:
-      - cph_postgres_db
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      CPHAPI_HOST: ${CPHAPI_HOST}
-      ARN_HEALTHCHECK: ${ARN_HEALTHCHECK}
-      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
-    restart: unless-stopped
-    volumes:
-      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
-    labels:
-      - "ofelia.enabled=true"
-      - "ofelia.job-exec.arn.schedule=@every 5m"
-      - "ofelia.job-exec.arn.command=fetch"
-    networks:
-      - cloudflared
-      
   universal_fetchtime:
     image: "ghcr.io/simonottosen/cph-security_fetchtime:main"
     container_name: "universal_fetchtime"
@@ -306,67 +253,29 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
       CPHAPI_HOST: ${CPHAPI_HOST}
-      ARN_HEALTHCHECK: ${FRA_HEALTHCHECK}
-      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
-    restart: unless-stopped
-    volumes:
-      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
-    networks:
-      - cloudflared
-
-
-  osl_fetchtime:
-    image: "ghcr.io/simonottosen/cph-security_oslo:main"
-    container_name: "osl_fetchtime"
-    user: user
-    depends_on:
-      - cph_postgres_db
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      CPHAPI_HOST: ${CPHAPI_HOST}
-      OSL_HEALTHCHECK: ${OSL_HEALTHCHECK}
-      GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
-    restart: unless-stopped
-    volumes:
-      - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
-    labels:
-      - "ofelia.enabled=true"
-      - "ofelia.job-exec.osl.schedule=@every 5m"
-      - "ofelia.job-exec.osl.command=fetch"
-    networks:
-      - cloudflared
-
-  germany_fetchtime:
-    image: "ghcr.io/simonottosen/cph-security_germany:main"
-    container_name: "germany_fetchtime"
-    user: user
-    depends_on:
-      - cph_postgres_db
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      CPHAPI_HOST: ${CPHAPI_HOST}
-      DUS_HEALTHCHECK: ${DUS_HEALTHCHECK}
       FRA_HEALTHCHECK: ${FRA_HEALTHCHECK}
+      ARN_HEALTHCHECK: ${ARN_HEALTHCHECK}
+      CPH_HEALTHCHECK: ${CPH_HEALTHCHECK}
+      OSL_HEALTHCHECK: ${OSL_HEALTHCHECK}
+      DUS_HEALTHCHECK: ${DUS_HEALTHCHECK}
       GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
     restart: unless-stopped
     volumes:
       - ${GCP_KEY_PATH}:/home/user/app/keyfile.json:ro
+    networks:
+      - cloudflared
     labels:
       - "ofelia.enabled=true"
       - "ofelia.job-exec.dus.schedule=@every 5m"
       - "ofelia.job-exec.dus.command=dus-fetch"
       - "ofelia.job-exec.fra.schedule=@every 5m"
       - "ofelia.job-exec.fra.command=fra-fetch"
-    networks:
-      - cloudflared
+      - "ofelia.job-exec.cph.schedule=@every 5m"
+      - "ofelia.job-exec.cph.command=cph-fetch"
+      - "ofelia.job-exec.osl.schedule=@every 5m"
+      - "ofelia.job-exec.osl.command=osl-fetch"
+      - "ofelia.job-exec.arn.schedule=@every 5m"
+      - "ofelia.job-exec.arn.command=arn-fetch"
 
 
   ofelia:
@@ -374,9 +283,7 @@ services:
     image: mcuadros/ofelia:latest
     restart: always
     depends_on:
-      - cph_fetchtime
-      - arn_fetchtime
-      - osl_fetchtime
+      - universal_fetchtime
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
