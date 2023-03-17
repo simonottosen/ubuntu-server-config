@@ -424,7 +424,6 @@ services:
       - cloudflared
       - kong
 
-services:
   kong-migrations:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
     command: kong migrations bootstrap
@@ -500,17 +499,17 @@ services:
     image: postgres:9.5
     profiles: ["database"]
     environment:
-      POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
-      POSTGRES_USER: ${KONG_PG_USER:-kong}
+      POSTGRES_DB: ${KONG_PG_DATABASE}
+      POSTGRES_USER: ${KONG_PG_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/kong_postgres_password
     secrets:
       - kong_postgres_password
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER:-kong}"]
+      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER}"]
       interval: 30s
       timeout: 30s
       retries: 3
-    restart: on-failure
+    restart: unless-stopped
     stdin_open: true
     tty: true
     networks:
@@ -540,10 +539,3 @@ networks:
         name: cloudflared
     kong-net:
       external: false
-
-x-kong-config: &kong-env
-  KONG_DATABASE: ${KONG_DATABASE:-off}
-  KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
-  KONG_PG_HOST: db
-  KONG_PG_USER: ${KONG_PG_USER:-kong}
-  KONG_PG_PASSWORD_FILE: /run/secrets/kong_postgres_password
