@@ -191,7 +191,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+      - '${POSTGRES_PORT}:5432'
     volumes:
       - ./cph/db:/var/lib/postgresql/data
       - ./cph-security/database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
@@ -434,7 +434,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: kong
     ports:
-      - "3444:5432"
+      - "5432:5432"
     networks:
       - kong
 
@@ -448,7 +448,6 @@ services:
       KONG_PG_HOST: kong_database
       KONG_PG_USER: ${POSTGRES_USER}
       KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
-      KONG_PG_PORT: 3444
       KONG_PG_DATABASE: kong
     ports:
       - "8000:8000"
