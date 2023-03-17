@@ -467,8 +467,6 @@ services:
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_PREFIX: ${KONG_PREFIX:-/var/run/kong}
       KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yaml"
-      KONG_ADMIN_GUI_PATH: "/manager"
-      KONG_ADMIN_GUI_URL: "http://localhost:8002/manager"
     secrets:
       - kong_postgres_password
     networks:
@@ -482,7 +480,6 @@ services:
       # - "${KONG_INBOUND_PROXY_LISTEN?Missing inbound proxy host}:8000:8000/tcp"
       # - "${KONG_INBOUND_SSL_PROXY_LISTEN?Missing inbound proxy ssl host}:8443:8443/tcp"
       # Alternative is deactivating check 5.13 in the security bench, if we consider Kong's own config to be enough security here
-      - "127.0.0.1:8002:8002/tcp"
       - "127.0.0.1:8001:8001/tcp"
       - "127.0.0.1:8444:8444/tcp"
     healthcheck:
