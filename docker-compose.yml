@@ -398,6 +398,7 @@ services:
       - "traefik.enable=false"
 
   pihole:
+    container_name: pihole
     image: pihole/pihole:latest
     ports:
       # port 80 will go through Traefik
@@ -429,7 +430,7 @@ services:
       - kong-net
       
   kong-migrations:
-    image: kong-gateway
+    image: kong/kong-gateway
     command: kong migrations bootstrap
     depends_on:
       - db
@@ -442,7 +443,7 @@ services:
     restart: on-failure
 
   kong-migrations-up:
-    image: kong-gateway
+    image: kong/kong-gateway
     command: kong migrations up && kong migrations finish
     depends_on:
       - db
@@ -455,7 +456,8 @@ services:
     restart: on-failure
 
   kong:
-    image: kong-gateway
+    container_name: kong
+    image: kong/kong-gateway
     user: "${KONG_USER:-kong}"
     environment:
       <<: *kong-env
@@ -501,6 +503,7 @@ services:
 
   db:
     image: postgres:9.5
+    container_name: kong_db
     environment:
       POSTGRES_DB: ${KONG_PG_DATABASE}
       POSTGRES_USER: ${KONG_PG_USER}
