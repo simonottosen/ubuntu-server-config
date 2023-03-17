@@ -448,7 +448,7 @@ services:
       KONG_PG_HOST: kong_database
       KONG_PG_USER: ${POSTGRES_USER}
       KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
-      KONG_PG_PORT: 344
+      KONG_PG_PORT: 3444
       KONG_PG_DATABASE: kong
     ports:
       - "8000:8000"
