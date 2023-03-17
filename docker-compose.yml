@@ -227,7 +227,6 @@ services:
       - "traefik.http.services.cphapi.loadbalancer.server.port=3000"
     networks:
       - cloudflared
-      - kong
 
   swagger-ui:
     container_name: cph_swagger-ui
@@ -315,7 +314,6 @@ services:
       - "traefik.http.services.cph.loadbalancer.server.port=8501"
     networks:
       - cloudflared
-      - kong
 
   webhook:
     build: ./webhook/
@@ -429,8 +427,7 @@ services:
       - TUNNEL_TOKEN=$TUNNEL_TOKEN
     networks:
       - cloudflared
-      - kong
-
+      - kong-net
   kong-migrations:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
     command: kong migrations bootstrap
