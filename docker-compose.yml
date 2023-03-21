@@ -471,7 +471,7 @@ services:
       KONG_PREFIX: ${KONG_PREFIX:-/var/run/kong}
       KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yaml"
       KONG_ADMIN_GUI_PATH: "/manager" 
-      KONG_ADMIN_GUI_URL: "http://0.0.0.0:8002"
+      KONG_ADMIN_GUI_URL: "http://10.0.0.6:8002"
     secrets:
       - kong_postgres_password
     networks:
