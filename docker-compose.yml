@@ -464,8 +464,8 @@ services:
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_PROXY_LISTEN: "0.0.0.0:8000"
-      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-      KONG_ADMIN_GUI_LISTEN: "0.0.0.0:8002"
+      KONG_ADMIN_LISTEN: "10.0.0.6:8001"
+      KONG_ADMIN_GUI_LISTEN: "10.0.0.6:8002"
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_PREFIX: ${KONG_PREFIX:-/var/run/kong}
@@ -480,8 +480,8 @@ services:
       # The following two environment variables default to an insecure value (0.0.0.0)
       # according to the CIS Security test.
       - "0.0.0.0:8000:8000/tcp"
-      - "0.0.0.0:8001:8001/tcp"
-      - "0.0.0.0:8002:8002/tcp"
+      - "10.0.0.6:8001:8001/tcp"
+      - "10.0.0.6:8002:8002/tcp"
       - "0.0.0.0:8443:8443/tcp"
       # Making them mandatory but undefined, like so would be backwards-breaking:
       # - "${KONG_INBOUND_PROXY_LISTEN?Missing inbound proxy host}:8000:8000/tcp"
