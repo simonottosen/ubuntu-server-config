@@ -314,6 +314,17 @@ services:
     networks:
       - cloudflared
 
+
+  cph_frontend_nextgen:
+    image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
+    container_name: "cph_frontend_nextgen"
+    restart: unless-stopped
+    ports:
+      - "3010:3000"
+    networks:
+      - kong
+
+
   webhook:
     build: ./webhook/
     container_name: webhook
