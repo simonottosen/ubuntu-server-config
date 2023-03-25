@@ -322,7 +322,7 @@ services:
     ports:
       - "3010:3000"
     networks:
-      - kong
+      - kong-net
 
 
   webhook:
