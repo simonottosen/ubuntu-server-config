@@ -422,7 +422,7 @@ services:
 
   kong:
     container_name: kong
-    image: ./kong
+    image: kong/kong-gateway
     user: "${KONG_USER:-kong}"
     environment:
       <<: *kong-env
