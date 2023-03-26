@@ -295,26 +295,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  cph_frontend:
-    image: "ghcr.io/simonottosen/cph-security_frontend:main"
-    container_name: "cph_frontend"
-    volumes:
-      - ./cph-security/frontend/:/frontend/project
-    depends_on:
-      - cph_postgres_db
-    environment:
-      CPHAPI_HOST: ${CPHAPI_HOST}
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.cph.rule=Host(`cph.simonottosen.dk`)"
-      - "traefik.http.routers.cph.entrypoints=websecure"
-      - "traefik.http.routers.cph.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.cph.loadbalancer.server.port=8501"
-    networks:
-      - cloudflared
-
-
   cph_frontend_nextgen:
     image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
     container_name: "cph_frontend_nextgen"
@@ -323,32 +303,6 @@ services:
       - "3010:3000"
     networks:
       - kong-net
-
-
-  webhook:
-    build: ./webhook/
-    container_name: webhook
-    restart: unless-stopped
-    user: 1000:1000
-    healthcheck:
-      test: "curl -sS --fail 127.0.0.1:9000 || exit 1"
-      interval: 120s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - ./webhook/hooks/:/etc/webhook
-      - ./webhook/scripts/:/scripts/
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./webhook/pipe:/hostpipe
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.webhook.rule=Host(`webhook.simonottosen.dk`)"
-      - "traefik.http.routers.webhook.entrypoints=websecure"
-      - "traefik.http.routers.webhook.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.webhook.loadbalancer.server.port=9000"
-      - traefik.http.routers.webhook.rule=PathPrefix(`/webhook`)
-      - traefik.http.routers.webhook.middlewares=webhook-stripprefix
-      - traefik.http.middlewares.webhook-stripprefix.stripprefix.prefixes=/webhook
 
   flood:
     image: jesec/flood
@@ -468,7 +422,7 @@ services:
 
   kong:
     container_name: kong
-    image: kong/kong-gateway
+    image: ./kong
     user: "${KONG_USER:-kong}"
     environment:
       <<: *kong-env
