@@ -262,6 +262,7 @@ services:
       CPH_HEALTHCHECK: ${CPH_HEALTHCHECK}
       OSL_HEALTHCHECK: ${OSL_HEALTHCHECK}
       DUS_HEALTHCHECK: ${DUS_HEALTHCHECK}
+      AMS_HEALTHCHECK: ${AMS_HEALTHCHECK}
       BER_HEALTHCHECK: ${BER_HEALTHCHECK}
       GOOGLE_APPLICATION_CREDENTIALS: /home/user/app/keyfile.json
     restart: unless-stopped
@@ -283,6 +284,8 @@ services:
       - "ofelia.job-exec.arn.command=arn-fetch"
       - "ofelia.job-exec.ber.schedule=@every 5m"
       - "ofelia.job-exec.ber.command=ber-fetch"
+      - "ofelia.job-exec.ams.schedule=@every 5m"
+      - "ofelia.job-exec.ams.command=ams-fetch"
 
 
   ofelia:
