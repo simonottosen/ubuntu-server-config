@@ -183,7 +183,7 @@ services:
       - cloudflared
 
   busybox:
-    image: busybox
+    image: yauritux/busybox-curl
     container_name: "busybox"
     restart: unless-stopped
     networks:
