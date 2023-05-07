@@ -310,7 +310,21 @@ services:
       - "3010:3000"
     networks:
       - cloudflared
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
+
+  krakend:
+    image: "devopsfaith/krakend"
+    container_name: "krakend"
+    ports:
+      - "3040:3040"
+      - "3050:3050"
+    restart: unless-stopped
+    networks:
+      - cloudflared
+    volumes:
+      - ./config/krakend:/etc/krakend/
 
   flood:
     image: jesec/flood
