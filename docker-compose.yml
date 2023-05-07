@@ -409,7 +409,7 @@ services:
     environment:
       CPHAPI_HOST: ${CPHAPI_HOST}
     restart: unless-stopped
-    network:
+    networks:
       - cloudflared
 
 volumes:
