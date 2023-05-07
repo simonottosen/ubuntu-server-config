@@ -415,7 +415,7 @@ services:
 
   kong-migrations-up:
     image: kong/kong-gateway
-    command: kong migrations up && kong migrations finish
+    command: kong migrations finish
     depends_on:
       - db
     environment:
