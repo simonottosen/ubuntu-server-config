@@ -1,12 +1,5 @@
 version: "3.9"
 
-x-kong-config: &kong-env
-  KONG_DATABASE: ${KONG_DATABASE}
-  KONG_PG_DATABASE: ${KONG_PG_DATABASE}
-  KONG_PG_HOST: ${KONG_PG_HOST}
-  KONG_PG_USER: ${KONG_PG_USER}
-  KONG_PG_PASSWORD_FILE: /run/secrets/kong_postgres_password
-
 services:
   traefik:
     image: "traefik"
@@ -189,6 +182,14 @@ services:
     networks:
       - cloudflared
 
+  busybox:
+    image: busybox
+    container_name: "busybox"
+    restart: unless-stopped
+    networks:
+      - cloudflared
+
+
   cph_postgres_db:
     image: postgres:14
     container_name: "cph_postgres_db"
@@ -307,8 +308,6 @@ services:
     restart: unless-stopped
     ports:
       - "3010:3000"
-    networks:
-      - kong-net
 
   flood:
     image: jesec/flood
@@ -398,105 +397,6 @@ services:
       - TUNNEL_TOKEN=$TUNNEL_TOKEN
     networks:
       - cloudflared
-      - kong-net
-      
-  kong-migrations:
-    image: kong/kong-gateway
-    command: kong migrations bootstrap
-    depends_on:
-      - db
-    environment:
-      <<: *kong-env
-    secrets:
-      - kong_postgres_password
-    networks:
-      - kong-net
-    restart: on-failure
-
-  kong-migrations-up:
-    image: kong/kong-gateway
-    command: kong migrations bootstrap
-    depends_on:
-      - db
-    environment:
-      <<: *kong-env
-    secrets:
-      - kong_postgres_password
-    networks:
-      - kong-net
-    restart: on-failure
-
-  kong:
-    container_name: kong
-    image: kong/kong-gateway
-    user: "${KONG_USER:-kong}"
-    environment:
-      <<: *kong-env
-      KONG_ADMIN_ACCESS_LOG: /dev/stdout
-      KONG_VITALS: on
-      KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_PROXY_LISTEN: "0.0.0.0:8000"
-      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-      KONG_ADMIN_GUI_LISTEN: "0.0.0.0:8002"
-      KONG_PROXY_ACCESS_LOG: /dev/stdout
-      KONG_PROXY_ERROR_LOG: /dev/stderr
-      KONG_PREFIX: ${KONG_PREFIX:-/var/run/kong}
-      KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yaml"
-      KONG_ADMIN_GUI_PATH: "/manager" 
-      KONG_ADMIN_GUI_URL: "http://10.0.0.6:8002"
-    secrets:
-      - kong_postgres_password
-    networks:
-      - kong-net
-      - cloudflared
-    ports:
-      # The following two environment variables default to an insecure value (0.0.0.0)
-      # according to the CIS Security test.
-      - "0.0.0.0:8000:8000/tcp"
-      - "10.0.0.6:8001:8001/tcp"
-      - "10.0.0.6:8002:8002/tcp"
-      - "0.0.0.0:8443:8443/tcp"
-      # Making them mandatory but undefined, like so would be backwards-breaking:
-      # - "${KONG_INBOUND_PROXY_LISTEN?Missing inbound proxy host}:8000:8000/tcp"
-      # - "${KONG_INBOUND_SSL_PROXY_LISTEN?Missing inbound proxy ssl host}:8443:8443/tcp"
-      # Alternative is deactivating check 5.13 in the security bench, if we consider Kong's own config to be enough security here
-      - "127.0.0.1:8444:8444/tcp"
-    healthcheck:
-      test: ["CMD", "kong", "health"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-    restart: on-failure:5
-    read_only: true
-    volumes:
-      - kong_prefix_vol:${KONG_PREFIX:-/var/run/kong}
-      - kong_tmp_vol:/tmp
-      - ./config:/opt/kong
-    security_opt:
-      - no-new-privileges
-
-  db:
-    image: postgres:9.5
-    container_name: kong_db
-    environment:
-      POSTGRES_DB: ${KONG_PG_DATABASE}
-      POSTGRES_USER: ${KONG_PG_USER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/kong_postgres_password
-    secrets:
-      - kong_postgres_password
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER}"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
-    restart: unless-stopped
-    stdin_open: true
-    tty: true
-    networks:
-      - kong-net
-    volumes:
-      - kong_data:/var/lib/postgresql/data
-
 
   ml_api:
     image: "ghcr.io/simonottosen/cph-security_ml_api:main"
@@ -509,29 +409,14 @@ services:
     environment:
       CPHAPI_HOST: ${CPHAPI_HOST}
     restart: unless-stopped
-    networks:
-      - kong-net
-
-secrets:
-  kong_postgres_password:
-    file: ./POSTGRES_PASSWORD
+    network:
+      - cloudflared
 
 volumes:
   pihole:
     name: pihole
-  kong_data: {}
-  kong_prefix_vol:
-    driver_opts:
-     type: tmpfs
-     device: tmpfs
-  kong_tmp_vol:
-    driver_opts:
-     type: tmpfs
-     device: tmpfs
      
 networks:
     cloudflared:
         name: cloudflared
-    kong-net:
-      external: false
       
