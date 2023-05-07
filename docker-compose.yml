@@ -188,7 +188,7 @@ services:
     restart: unless-stopped
     networks:
       - cloudflared
-
+    tty: true
 
   cph_postgres_db:
     image: postgres:14
