@@ -400,31 +400,31 @@ services:
       - cloudflared
       - kong-net
       
-##  kong-migrations:
-##    image: kong/kong-gateway
-##    command: kong migrations bootstrap
-##    depends_on:
-##      - db
-##    environment:
-##      <<: *kong-env
-##    secrets:
-##      - kong_postgres_password
-##    networks:
-##      - kong-net
-##    restart: on-failure
+  kong-migrations:
+    image: kong/kong-gateway
+    command: kong migrations bootstrap
+    depends_on:
+      - db
+    environment:
+      <<: *kong-env
+    secrets:
+      - kong_postgres_password
+    networks:
+      - kong-net
+    restart: on-failure
 
-##  kong-migrations-up:
-##    image: kong/kong-gateway
-##    command: kong migrations up && kong migrations finish
-##    depends_on:
-##      - db
-##    environment:
-##      <<: *kong-env
-##    secrets:
-##      - kong_postgres_password
-##    networks:
-##      - kong-net
-##    restart: on-failure
+  kong-migrations-up:
+    image: kong/kong-gateway
+    command: kong migrations up && kong migrations finish
+    depends_on:
+      - db
+    environment:
+      <<: *kong-env
+    secrets:
+      - kong_postgres_password
+    networks:
+      - kong-net
+    restart: on-failure
 
   kong:
     container_name: kong
