@@ -314,8 +314,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
 
-  apisix-dashboard:
+  apisix_dashboard:
     image: apache/apisix-dashboard
+    container_name: "apisix_dashboard"
     restart: always
     volumes:
     - ./config/apisix_dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
@@ -325,6 +326,7 @@ services:
       - cloudflared
 
   apisix:
+    container_name: "apisix"
     image: apache/apisix
     restart: always
     volumes:
@@ -342,6 +344,7 @@ services:
       - cloudflared
 
   etcd:
+    container_name: "etcd"
     image: bitnami/etcd:3.4.15
     restart: always
     volumes:
