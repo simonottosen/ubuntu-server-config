@@ -307,7 +307,7 @@ services:
     container_name: "cph_frontend_nextgen"
     restart: unless-stopped
     ports:
-      - "3010:3000"
+      - "3010:3030"
     networks:
       - cloudflared
     volumes:
@@ -358,6 +358,29 @@ services:
       - "2379:2379/tcp"
     networks:
       - cloudflared
+
+  prometheus:
+    image: prom/prometheus:v2.25.0
+    restart: always
+    volumes:
+      - ./config/prometheus_conf/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - cloudflared
+
+  grafana:
+    image: grafana/grafana:7.3.7
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./config/grafana_conf/provisioning:/etc/grafana/provisioning"
+      - "./config/grafana_conf/dashboards:/var/lib/grafana/dashboards"
+      - "./config/grafana_conf/config/grafana.ini:/etc/grafana/grafana.ini"
+    networks:
+      - cloudflared
+
 
   flood:
     image: jesec/flood
