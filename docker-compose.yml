@@ -318,8 +318,6 @@ services:
     image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
     container_name: "cph_frontend_nextgen"
     restart: unless-stopped
-    ports:
-      - "3000:3030"
     networks:
       - cloudflared
     volumes:
@@ -372,6 +370,7 @@ services:
       - cloudflared
 
   prometheus:
+    container_name: "prometheus"
     image: prom/prometheus:v2.25.0
     restart: always
     volumes:
@@ -382,6 +381,7 @@ services:
       - cloudflared
 
   grafana:
+    container_name: "grafana"
     image: grafana/grafana:7.3.7
     restart: always
     ports:
