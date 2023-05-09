@@ -79,6 +79,18 @@ services:
     restart: unless-stopped
     networks:
       - cloudflared
+      
+      
+      
+  reverse-proxy:
+    image: "nginx:alpine"
+    container_name: "reverse-proxy"
+    volumes:
+      - ./config/reverse_proxy:/etc/nginx/conf.d
+    restart: unless-stopped
+    networks:
+      - cloudflared
+
 
     
   jupyter:
