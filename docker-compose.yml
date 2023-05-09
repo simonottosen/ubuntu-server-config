@@ -319,7 +319,7 @@ services:
     container_name: "cph_frontend_nextgen"
     restart: unless-stopped
     ports:
-      - "3010:3030"
+      - "3000:3030"
     networks:
       - cloudflared
     volumes:
