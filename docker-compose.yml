@@ -95,7 +95,7 @@ services:
     
   jupyter:
     restart: always
-    image: jupyter/scipy-notebook
+    image: jupyter/scipy-notebook:python-3.10
     container_name: "jupyter"
     volumes:
       - ./jupyter:/home/jovyan/
