@@ -111,7 +111,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PORT: ${POSTGRES_PORT}
     command: "start-notebook.sh \
-      --NotebookApp.password=${JUPYTER_TOKEN} 
+      --NotebookApp.password=${JUPYTER_TOKEN} "
     networks:
       - cloudflared
 
@@ -494,6 +494,21 @@ services:
     networks:
       - cloudflared
 
+  ml_api_beta:
+    image: "ghcr.io/simonottosen/cph-security_ml_api:main"
+    container_name: "ml_api_beta"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cph_postgres_db
+      - cph_postgrest
+    environment:
+      CPHAPI_HOST: ${CPHAPI_HOST}
+    restart: unless-stopped
+    networks:
+      - cloudflared
+
+      
 volumes:
   pihole:
     name: pihole
