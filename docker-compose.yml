@@ -500,8 +500,6 @@ services:
     networks:
       - cloudflared
 
-
-
 volumes:
   pihole:
     name: pihole
