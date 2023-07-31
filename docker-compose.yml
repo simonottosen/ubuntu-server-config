@@ -112,31 +112,25 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
     command: "start-notebook.sh \
       --NotebookApp.password=${JUPYTER_TOKEN} \
-
     networks:
       - cloudflared
 
+
   speedtest:
       container_name: speedtest
-      image: henrywhitaker3/speedtest-tracker
-      volumes:
-          - /config/speedtest:/config
       environment:
-          - OOKLA_EULA_GDPR=true
-      logging:
-          driver: "json-file"
-          options:
-              max-file: "10"
-              max-size: "200k"
+          - PUID=1000
+          - PGID=1000
+          - TZ=America/Chicago
+      volumes:
+          - '/etc/localtime:/etc/localtime:ro'
+          - '/config/speedtest:/config'
+          - '/config/speedtest/web:/etc/ssl/web'
+      image: 'ghcr.io/alexjustesen/speedtest-tracker:latest'
       restart: unless-stopped
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.speedtest.rule=Host(`speedtest.simonottosen.dk`)"
-        - "traefik.http.routers.speedtest.entrypoints=websecure"
-        - "traefik.http.routers.speedtest.tls.certresolver=mytlschallenge"
-        - "traefik.http.services.speedtest.loadbalancer.server.port=80"
       networks:
         - cloudflared
+
 
 ##  omada-controller:
 ##    container_name: omada-controller
