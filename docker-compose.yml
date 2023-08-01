@@ -329,7 +329,7 @@ services:
     container_name: "cph_frontend_nextgen_beta"
     restart: unless-stopped
     environment:
-      API_URL: ${API_URL}
+      API_URL_BETA: ${API_URL}
     networks:
       - cloudflared
     volumes:
