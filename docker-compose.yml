@@ -315,6 +315,8 @@ services:
     image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
     container_name: "cph_frontend_nextgen"
     restart: unless-stopped
+    environment:
+      API_URL: ${API_URL}
     networks:
       - cloudflared
     volumes:
@@ -326,6 +328,8 @@ services:
     image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
     container_name: "cph_frontend_nextgen_beta"
     restart: unless-stopped
+    environment:
+      API_URL: ${API_URL}
     networks:
       - cloudflared
     volumes:
