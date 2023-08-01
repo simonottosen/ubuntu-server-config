@@ -321,6 +321,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
 
+
+  cph_frontend_nextgen_beta:
+    image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
+    container_name: "cph_frontend_nextgen_beta"
+    restart: unless-stopped
+    networks:
+      - cloudflared
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   apisix_dashboard:
     image: apache/apisix-dashboard
     container_name: "apisix_dashboard"
