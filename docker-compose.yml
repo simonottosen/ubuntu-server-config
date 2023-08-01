@@ -316,7 +316,7 @@ services:
     container_name: "cph_frontend_nextgen"
     restart: unless-stopped
     environment:
-      API_URL: ${API_URL}
+      REACT_APP_API_HOST: ${API_URL}
     networks:
       - cloudflared
     volumes:
@@ -329,7 +329,7 @@ services:
     container_name: "cph_frontend_nextgen_beta"
     restart: unless-stopped
     environment:
-      API_URL_BETA: ${API_URL}
+      REACT_APP_API_HOST: ${API_URL_BETA}
     networks:
       - cloudflared
     volumes:
