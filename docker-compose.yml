@@ -203,6 +203,11 @@ services:
       - 6789:6789 #optional
       - 5514:5514/udp #optional
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
 
   hjem:
     image: tpanum/hjem
