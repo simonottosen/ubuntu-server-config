@@ -340,7 +340,8 @@ services:
       - "ofelia.job-exec.ams.command=ams-fetch"
       - "ofelia.job-exec.dub.schedule=@every 5m"
       - "ofelia.job-exec.dub.command=dub-fetch"
-
+      - "ofelia.job-exec.lhr.schedule=@every 5m"
+      - "ofelia.job-exec.lhr.command=lhr-fetch"
 
   ofelia:
     container_name: "ofelia_scheduler"
