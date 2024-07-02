@@ -342,6 +342,8 @@ services:
       - "ofelia.job-exec.dub.command=dub-fetch"
       - "ofelia.job-exec.lhr.schedule=@every 5m"
       - "ofelia.job-exec.lhr.command=lhr-fetch"
+      - "ofelia.job-exec.muc.schedule=@every 5m"
+      - "ofelia.job-exec.muc.command=muc-fetch"
 
   ofelia:
     container_name: "ofelia_scheduler"
