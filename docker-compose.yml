@@ -20,7 +20,7 @@ services:
       - 5050:5050
     environment:
       TZ: Europe/Copenhagen
-      HASS_URL: http://192.168.1.115:8123
+      HASS_URL: http://192.168.1.5:8123
     restart: always
     
   traefik:
