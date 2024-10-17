@@ -20,8 +20,8 @@ services:
     privileged: true
     network_mode: host
     environment:
-      - USERNAME=${ESPHOME_USERNAME}
-      - PASSWORD=${ESPHOME_PASSWORD}
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
 
   ha-fusion:
     container_name: ha-fusion
