@@ -10,6 +10,19 @@ services:
     privileged: true
     network_mode: host
 
+  esphome:
+    container_name: esphome
+    image: ghcr.io/esphome/esphome
+    volumes:
+      - /path/to/esphome/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    privileged: true
+    network_mode: host
+    environment:
+      - USERNAME=${ESPHOME_USERNAME}
+      - PASSWORD=${ESPHOME_PASSWORD}
+
   ha-fusion:
     container_name: ha-fusion
     image: ghcr.io/matt8707/ha-fusion
