@@ -10,6 +10,23 @@ services:
     privileged: true
     network_mode: host
 
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    restart: unless-stopped
+    volumes:
+      - ./config/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    ports:
+      # Frontend port
+      - 8080:8080
+    environment:
+      - TZ=Europe/Copenhagen
+    devices:
+      # Make sure this matched your adapter location
+      - /dev/serial/by-id/usb-Nabu_Casa_SkyConnect_v1.0_b4ffc2edaa9ced1186347dfaa7669f5d-if00-port0:/dev/ttyACM0
+
+
   esphome:
     container_name: esphome
     image: ghcr.io/esphome/esphome
