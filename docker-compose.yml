@@ -26,6 +26,26 @@ services:
 #      # Make sure this matched your adapter location
 #      - /dev/serial/by-id/usb-Nabu_Casa_SkyConnect_v1.0_b4ffc2edaa9ced1186347dfaa7669f5d-if00-port0:/dev/ttyACM0
 
+  wyoming-whisper:
+    image: rhasspy/wyoming-whisper
+    container_name: wyoming-whisper
+    ports:
+      - 10300:10300
+    volumes:
+      - /config/homeassistant/wyoming-whisper/data:/data
+    command: "--model tiny-int8"
+    restart: unless-stopped
+
+  wyoming-piper:
+    image: rhasspy/wyoming-piper
+    container_name: wyoming-piper
+    ports:
+      - 10200:10200
+    volumes:
+      - /config/homeassistant//wyoming-piper/data:/data
+    command: "--voice en_US-lessac-medium"
+    restart: unless-stopped
+
 
   esphome:
     container_name: esphome
@@ -39,19 +59,6 @@ services:
     environment:
       - USERNAME=${USERNAME}
       - PASSWORD=${PASSWORD}
-
-  ha-fusion:
-    container_name: ha-fusion
-    image: ghcr.io/matt8707/ha-fusion
-    volumes:
-      - ./config/ha-fusion:/app/data
-    network_mode: bridge
-    ports:
-      - 5050:5050
-    environment:
-      TZ: Europe/Copenhagen
-      HASS_URL: http://192.168.1.5:8123
-    restart: always
 
   mosquitto:
     image: eclipse-mosquitto
@@ -131,34 +138,6 @@ services:
     networks:
       - cloudflared
 
-  filippa:
-    image: "nginx:alpine"
-    container_name: "filippa"
-    volumes:
-      - ./filippa:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.filippa.rule=Host(`filippa.simonottosen.dk`)"
-      - "traefik.http.routers.filippa.entrypoints=websecure"
-      - "traefik.http.routers.filippa.tls.certresolver=mytlschallenge"
-    restart: unless-stopped
-    networks:
-      - cloudflared
-      
-
-  flensborggade:
-    image: "nginx:alpine"
-    container_name: "flensborggade"
-    volumes:
-      - ./flensborggade:/usr/share/nginx/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.filippa.rule=Host(`flensborggade.simonottosen.dk`)"
-      - "traefik.http.routers.filippa.entrypoints=websecure"
-      - "traefik.http.routers.filippa.tls.certresolver=mytlschallenge"
-    restart: unless-stopped
-    networks:
-      - cloudflared
       
   reverse-proxy:
     image: "nginx:alpine"
@@ -168,8 +147,6 @@ services:
     restart: unless-stopped
     networks:
       - cloudflared
-
-
     
   jupyter:
     restart: always
@@ -414,19 +391,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-
-
-  cph_frontend_nextgen_beta:
-    image: "ghcr.io/simonottosen/cph-security_frontend-nextgen:main"
-    container_name: "cph_frontend_nextgen_beta"
-    restart: unless-stopped
-    environment:
-      REACT_APP_API_HOST: ${API_URL_BETA}
-    networks:
-      - cloudflared
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-
   apisix_dashboard:
     image: apache/apisix-dashboard
     container_name: "apisix_dashboard"
@@ -471,31 +435,6 @@ services:
       - "2379:2379/tcp"
     networks:
       - cloudflared
-
-  prometheus:
-    container_name: "prometheus"
-    image: prom/prometheus:v2.25.0
-    restart: always
-    volumes:
-      - ./config/prometheus_conf/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - cloudflared
-
-  grafana:
-    container_name: "grafana"
-    image: grafana/grafana:7.3.7
-    restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - "./config/grafana_conf/provisioning:/etc/grafana/provisioning"
-      - "./config/grafana_conf/dashboards:/var/lib/grafana/dashboards"
-      - "./config/grafana_conf/config/grafana.ini:/etc/grafana/grafana.ini"
-    networks:
-      - cloudflared
-
 
   flood:
     image: jesec/flood
@@ -599,19 +538,6 @@ services:
     restart: unless-stopped
     networks:
       - cloudflared
-
-  ml_api_beta:
-    image: "ghcr.io/simonottosen/cph-security_ml_api:main"
-    container_name: "ml_api_beta"
-    depends_on:
-      - cph_postgres_db
-      - cph_postgrest
-    environment:
-      CPHAPI_HOST: ${CPHAPI_HOST}
-    restart: unless-stopped
-    networks:
-      - cloudflared
-
       
 volumes:
   pihole:
