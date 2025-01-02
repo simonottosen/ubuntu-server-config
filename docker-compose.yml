@@ -26,13 +26,28 @@ services:
 #      # Make sure this matched your adapter location
 #      - /dev/serial/by-id/usb-Nabu_Casa_SkyConnect_v1.0_b4ffc2edaa9ced1186347dfaa7669f5d-if00-port0:/dev/ttyACM0
 
+  openwakeword:
+    container_name: openwakeword
+    image: rhasspy/wyoming-openwakeword
+    user: 1001:1001
+    volumes:
+      - ./config/homeassistant/wakeword:/data
+      - ./config/homeassistant/wakeword:/custom
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=Australia/Melbourne
+    command: --preload-model 'ok_nabu' --custom-model-dir /custom
+    restart: unless-stopped
+
+
   wyoming-whisper:
     image: rhasspy/wyoming-whisper
     container_name: wyoming-whisper
     ports:
       - 10300:10300
     volumes:
-      - /config/homeassistant/wyoming-whisper/data:/data
+      - ./config/homeassistant/wyoming-whisper/data:/data
     command: "--model tiny-int8"
     restart: unless-stopped
 
@@ -42,7 +57,7 @@ services:
     ports:
       - 10200:10200
     volumes:
-      - /config/homeassistant//wyoming-piper/data:/data
+      - ./config/homeassistant//wyoming-piper/data:/data
     command: "--voice en_US-lessac-medium"
     restart: unless-stopped
 
