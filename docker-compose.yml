@@ -30,6 +30,8 @@ services:
     container_name: openwakeword
     image: rhasspy/wyoming-openwakeword
     user: 1001:1001
+    ports:
+      - 10400:10400
     volumes:
       - ./config/homeassistant/wakeword:/data
       - ./config/homeassistant/wakeword:/custom
