@@ -50,7 +50,7 @@ services:
       - 10300:10300
     volumes:
       - ./config/homeassistant/wyoming-whisper/data:/data
-    command: "--model tiny-int8"
+    command: "--model small"
     restart: unless-stopped
 
   wyoming-piper:
