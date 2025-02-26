@@ -14,12 +14,12 @@ services:
     image: filebrowser/filebrowser
     container_name: filebrowser
     ports:
-      - "8880:80"
+      - "8888:80"
     volumes:
       - ./downloads:/srv
       - ./config/filebrowser/filebrowser.db:/database.db
       - ./config/filebrowser/.filebrowser.json:/.filebrowser.json
-    user: "${UID}:${GID}"
+    user: 1000:1000
 
 
 #  zigbee2mqtt:
