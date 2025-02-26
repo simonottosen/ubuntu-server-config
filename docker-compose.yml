@@ -10,6 +10,18 @@ services:
     privileged: true
     network_mode: host
 
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    ports:
+      - "8880:80"
+    volumes:
+      - ./downloads:/srv
+      - ./config/filebrowser/filebrowser.db:/database.db
+      - ./config/filebrowser/.filebrowser.json:/.filebrowser.json
+    user: "${UID}:${GID}"
+
+
 #  zigbee2mqtt:
 #    container_name: zigbee2mqtt
 #    image: koenkk/zigbee2mqtt
