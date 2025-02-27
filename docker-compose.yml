@@ -196,7 +196,7 @@ services:
     
   jupyter:
     restart: always
-    image: jupyter/scipy-notebook:python-3.10
+    image: autogluon/autogluon:1.0.0-cpu-jupyter-ubuntu20.04-py3.10
     container_name: "jupyter"
     volumes:
       - ./jupyter:/home/jovyan/
