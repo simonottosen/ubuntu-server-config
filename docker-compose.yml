@@ -17,7 +17,7 @@ services:
       - "8888:80"
     volumes:
       - ./downloads:/srv
-      - ./config/filebrowser/filebrowser.db:/database.db
+      - ./config/filebrowser/database.db:/database.db
       - ./config/filebrowser/.filebrowser.json:/.filebrowser.json
     user: 1000:1000
 
